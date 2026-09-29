@@ -1,0 +1,6129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>ARISE — Level Up In Real Life</title>
+
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+ --bg:#05070b;--panel:#0b1018;--line:#263442;
+ --cyan:#72e8ff;--blue:#3ba7ff;--white:#e9f7ff;
+ --muted:#738596;--green:#6dffb1;--gold:#ffd45c;--red:#ff5f72;
+}
+html,body{
+ margin:0;width:100%;height:100%;background:#020408;color:var(--white);
+ font-family:Arial,Helvetica,sans-serif;overflow:hidden;
+}
+body{
+ background:radial-gradient(circle at 50% 0%,rgba(37,108,151,.15),transparent 35%),
+ linear-gradient(180deg,#05080d,#020408);
+}
+button{font:inherit}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.35}
+#app{
+ width:100%;max-width:520px;height:100dvh;margin:auto;position:relative;
+ overflow:hidden;background:
+ linear-gradient(rgba(114,232,255,.015) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(114,232,255,.015) 1px,transparent 1px),#05080d;
+ background-size:30px 30px;
+}
+header{
+ height:64px;padding:13px 16px;display:flex;justify-content:space-between;
+ align-items:center;border-bottom:1px solid #1a2733;background:rgba(3,7,12,.94)
+}
+.logo{font-size:20px;font-weight:900;letter-spacing:5px}
+.system{font-size:9px;letter-spacing:2px;color:var(--green)}
+#content{height:calc(100% - 124px);overflow-y:auto;padding:15px;padding-bottom:30px;scrollbar-width:none}
+#content::-webkit-scrollbar{display:none}
+.page{display:none;animation:fade .2s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.card,.quest,.muscle,.shop-item{
+ background:linear-gradient(145deg,rgba(15,23,34,.96),rgba(6,11,17,.96));
+ border:1px solid var(--line);position:relative;
+}
+.card{margin-bottom:13px;padding:15px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.card:before{content:"";position:absolute;top:-1px;left:-1px;width:45px;height:3px;background:var(--cyan)}
+.system-title{font-size:11px;letter-spacing:4px;color:var(--cyan);margin-bottom:14px}
+.player{display:grid;grid-template-columns:1fr auto;gap:12px}
+.name{font-size:22px;font-weight:900;letter-spacing:2px}
+.rank{display:inline-block;margin-top:5px;color:var(--gold);font-size:11px;font-weight:bold;letter-spacing:3px}
+.level{font-size:30px;font-weight:900;text-align:right}
+.label{color:var(--muted);font-size:9px;letter-spacing:2px}
+.xp-wrap{margin-top:13px}
+.xp-head,.quest-bottom,.price,.section-head,.stat-row{
+ display:flex;justify-content:space-between;align-items:center
+}
+.xp-head{font-size:10px;color:var(--muted);margin-bottom:6px}
+.bar{width:100%;height:7px;background:#111a24;border:1px solid #263542;overflow:hidden}
+.fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .4s ease}
+.resource-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.resource{background:#080e16;border:1px solid #202e3a;padding:10px 6px;text-align:center}
+.resource strong{display:block;font-size:16px;margin-top:4px}
+.resource small{color:var(--muted);font-size:8px;letter-spacing:1px}
+.power{margin-top:13px;padding:12px;border:1px solid #27445a;background:rgba(35,104,145,.08);display:flex;justify-content:space-between;align-items:center}
+.power strong{color:var(--cyan);font-size:23px}
+.section-head{margin:20px 0 10px}
+.section-head h2{margin:0;font-size:14px;letter-spacing:3px}
+.section-head span{color:var(--muted);font-size:9px;letter-spacing:1px}
+.quest{padding:14px;margin-bottom:9px}
+.quest-top{display:flex;justify-content:space-between;gap:10px}
+.quest-name{font-weight:bold;font-size:14px}
+.quest-desc{color:var(--muted);font-size:10px;margin-top:5px}
+.reward{color:var(--gold);font-size:9px;text-align:right;white-space:nowrap}
+button{
+ border:0;color:#031018;background:var(--cyan);padding:10px 15px;
+ font-size:10px;font-weight:900;letter-spacing:2px;cursor:pointer
+}
+button.secondary{color:var(--cyan);background:#0b1720;border:1px solid #315366}
+button.gold{background:var(--gold)}
+.done{color:var(--green);font-size:10px;letter-spacing:2px;font-weight:bold}
+.muscle-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.muscle{padding:14px}
+.muscle h3{margin:0 0 5px;font-size:13px}
+.muscle p{margin:0 0 12px;color:var(--muted);font-size:9px}
+.stat{margin-bottom:15px}
+.stat-row{margin-bottom:6px}
+.stat-name{font-size:10px;letter-spacing:2px}
+.stat-value{color:var(--cyan);font-size:12px;font-weight:bold}
+.stat .bar{height:8px}
+.profile-big{text-align:center;padding:20px}
+.profile-level{font-size:55px;font-weight:900}
+.profile-rank{color:var(--gold);letter-spacing:5px;font-weight:bold}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.info{border:1px solid #202e3b;padding:12px;background:#080d14}
+.info strong{display:block;font-size:20px}
+.info span{color:var(--muted);font-size:8px;letter-spacing:1px}
+.achievement{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #17232d}
+.achievement:last-child{border-bottom:0}
+.ach-icon{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:1px solid #2b3d4b;background:#0b121b}
+.achievement strong{display:block;font-size:11px}
+.achievement span{color:var(--muted);font-size:9px}
+.locked{opacity:.3}
+.shop-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
+.shop-tab{background:#080f17;color:#607383;border:1px solid #243441;padding:11px 5px;font-size:9px;letter-spacing:1px}
+.shop-tab.active{color:var(--cyan);border-color:#39748c;background:#0b1720}
+.shop-item{padding:14px;margin-bottom:9px}
+.shop-item.owned{border-color:#315c50}
+.shop-item.equipped{border-color:var(--cyan);box-shadow:0 0 18px rgba(114,232,255,.08)}
+.shop-item-top{display:flex;align-items:center;gap:12px}
+.shop-icon{width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-size:24px;background:#080e15;border:1px solid #273946}
+.shop-item h3{margin:0;font-size:13px;letter-spacing:1px}
+.shop-item p{margin:5px 0 0;color:var(--muted);font-size:9px;line-height:1.5}
+.price{margin-top:12px}
+.price span{color:var(--gold);font-size:10px;font-weight:bold}
+.equipped-badge{position:absolute;top:10px;right:10px;color:var(--green);font-size:8px;letter-spacing:1px}
+.title-display{text-align:center;color:var(--cyan);font-size:10px;letter-spacing:3px;margin-top:8px}
+
+#bottom-nav{
+ position:absolute;bottom:0;left:0;width:100%;height:60px;display:grid;
+ grid-template-columns:repeat(5,1fr);background:rgba(3,7,12,.97);
+ border-top:1px solid #1e2d39;z-index:20
+}
+.nav-btn{background:none;color:#607383;padding:7px 2px;font-size:7px;letter-spacing:1px}
+.nav-btn.active{color:var(--cyan)}
+.nav-icon{display:block;font-size:16px;margin-bottom:3px}
+
+#runner,#levelup{
+ position:absolute;inset:0;z-index:50;display:none;
+ background:radial-gradient(circle at center,rgba(22,81,110,.18),transparent 40%),rgba(2,5,9,.98)
+}
+#runner.show,#levelup.show{display:flex;align-items:center;justify-content:center}
+.modal{
+ width:calc(100% - 24px);max-height:94%;overflow:auto;border:1px solid #315164;
+ background:#071019;padding:18px;box-shadow:0 0 60px rgba(44,185,255,.12)
+}
+.modal-title{text-align:center;color:var(--cyan);font-size:10px;letter-spacing:5px;margin-bottom:8px}
+.battle-top{display:grid;grid-template-columns:1fr auto 1fr;gap:7px;align-items:center;margin:12px 0}
+.battle-side{border:1px solid #263a49;background:#080e15;padding:9px}
+.battle-side.right{text-align:right}
+.battle-label{font-size:7px;color:var(--muted);letter-spacing:2px}
+.battle-value{font-size:16px;font-weight:900;margin-top:4px}
+.vs{font-size:12px;color:var(--gold);font-weight:900}
+.energy-mini{height:5px;background:#15202a;margin-top:6px}
+.energy-mini div{height:100%;background:var(--green)}
+.combat-log{
+ border:1px solid #263a49;background:#050a10;padding:9px;
+ min-height:35px;text-align:center;color:var(--cyan);font-size:9px;letter-spacing:1px;
+ margin-bottom:10px
+}
+.exercise-name{text-align:center;font-size:27px;font-weight:900;margin:8px 0}
+.exercise-info{text-align:center;color:var(--muted);font-size:10px;margin-bottom:13px}
+.set-box{text-align:center;border:1px solid #263a49;padding:17px 10px;margin-bottom:12px;background:rgba(8,15,23,.7)}
+.set-number{color:var(--muted);font-size:9px;letter-spacing:3px}
+.reps{font-size:45px;font-weight:900;margin:6px 0}
+.instruction{color:#a4b5c2;font-size:10px;line-height:1.6;text-align:center;margin-bottom:15px}
+.timer{text-align:center;font-size:35px;font-weight:900;color:var(--cyan);margin:10px}
+.modal-actions{display:grid;gap:8px}
+.levelup-inner{
+ width:calc(100% - 30px);border:1px solid var(--cyan);padding:25px 18px;
+ text-align:center;background:linear-gradient(145deg,rgba(10,25,36,.98),rgba(3,8,13,.99));
+ box-shadow:0 0 80px rgba(83,220,255,.16)
+}
+.levelup-title{font-size:11px;letter-spacing:6px;color:var(--cyan)}
+.level-change{font-size:36px;font-weight:900;margin:20px 0}
+.gains{display:grid;gap:7px;color:var(--green);font-weight:bold;font-size:12px}
+.result{
+ border:1px solid #315c50;background:rgba(42,130,92,.08);padding:13px;
+ text-align:center;margin:10px 0
+}
+.result strong{display:block;font-size:22px;color:var(--green)}
+.result span{font-size:9px;color:var(--muted)}
+.toast{
+ position:absolute;left:50%;bottom:76px;transform:translateX(-50%) translateY(15px);
+ background:#0d1a23;border:1px solid #365365;padding:11px 15px;color:var(--white);
+ font-size:10px;letter-spacing:1px;opacity:0;pointer-events:none;z-index:100;
+ transition:.25s;white-space:nowrap
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+
+<body>
+<div id="app">
+
+<header>
+ <div class="logo">ARISE</div>
+ <div class="system">● SYSTEM ONLINE</div>
+</header>
+
+<div id="content">
+
+<section id="questPage" class="page active">
+ <div class="system-title">PLAYER STATUS</div>
+ <div class="card">
+  <div class="player">
+   <div>
+    <div class="label">PLAYER</div>
+    <div class="name">RISHAN</div>
+    <div class="rank" id="rankText">E-RANK</div>
+   </div>
+   <div>
+    <div class="label">LEVEL</div>
+    <div class="level" id="levelText">1</div>
+   </div>
+  </div>
+
+  <div class="xp-wrap">
+   <div class="xp-head"><span>EXPERIENCE</span><span id="xpText">0 / 100 XP</span></div>
+   <div class="bar"><div class="fill" id="xpBar"></div></div>
+  </div>
+
+  <div class="resource-grid">
+   <div class="resource">🪙<strong id="coinText">100,000,000</strong><small>COINS</small></div>
+   <div class="resource">❤️<strong id="hpText">100</strong><small>HP</small></div>
+   <div class="resource">⚡<strong id="energyText">100</strong><small>ENERGY</small></div>
+  </div>
+
+  <div class="power">
+   <span><div class="label">COMBAT POWER</div><div style="font-size:10px;color:#7f94a4;margin-top:3px">Based on current stats</div></span>
+   <strong id="powerText">3</strong>
+  </div>
+ </div>
+
+ <div class="section-head">
+  <h2>DAILY QUESTS</h2><span id="streakText">🔥 0 DAY STREAK</span>
+ </div>
+ <div id="questList"></div>
+</section>
+
+<section id="trainingPage" class="page">
+ <div class="system-title">TRAINING SYSTEM</div>
+
+ <div class="card">
+  <div class="label">CURRENT ENERGY</div>
+  <div style="font-size:25px;font-weight:900;margin-top:5px">⚡ <span id="trainingEnergy">100</span></div>
+  <div style="color:#6e8292;font-size:9px;margin-top:5px">Training consumes energy.</div>
+ </div>
+
+ <div class="section-head"><h2>SELECT TARGET</h2><span>COMBAT TRAINING</span></div>
+ <div class="muscle-grid" id="muscleGrid"></div>
+</section>
+
+<section id="statsPage" class="page">
+ <div class="system-title">PLAYER STATS</div>
+
+ <div class="card">
+  <div class="stat">
+   <div class="stat-row"><span class="stat-name">STRENGTH</span><span class="stat-value" id="strengthValue">1</span></div>
+   <div class="bar"><div class="fill" id="strengthBar"></div></div>
+  </div>
+  <div class="stat">
+   <div class="stat-row"><span class="stat-name">STAMINA</span><span class="stat-value" id="staminaValue">1</span></div>
+   <div class="bar"><div class="fill" id="staminaBar"></div></div>
+  </div>
+  <div class="stat">
+   <div class="stat-row"><span class="stat-name">DISCIPLINE</span><span class="stat-value" id="disciplineValue">1</span></div>
+   <div class="bar"><div class="fill" id="disciplineBar"></div></div>
+  </div>
+ </div>
+
+ <div class="card">
+  <div class="label">COMBAT POWER</div>
+  <div style="font-size:30px;font-weight:900;margin-top:7px"><span id="statsPower">3</span></div>
+  <div style="font-size:9px;color:#708392;margin-top:5px">STRENGTH + STAMINA + DISCIPLINE</div>
+ </div>
+
+ <div class="card">
+  <div class="label">RECOVERY</div>
+  <div style="margin-top:12px">
+   <button class="secondary" style="width:100%" onclick="recoverPlayer()">⚡ RECOVER</button>
+  </div>
+ </div>
+</section>
+
+<section id="shopPage" class="page">
+ <div class="system-title">ARISE SHOP</div>
+ <div class="card">
+  <div class="label">AVAILABLE COINS</div>
+  <div style="font-size:30px;font-weight:900;margin-top:5px">🪙 <span id="shopCoins">100,000,000</span></div>
+  <div style="font-size:9px;color:#708392;margin-top:5px">NO MAXIMUM COIN CAP</div>
+ </div>
+
+ <div class="shop-tabs">
+  <button class="shop-tab active" onclick="setShopTab('titles',this)">TITLES</button>
+  <button class="shop-tab" onclick="setShopTab('themes',this)">THEMES</button>
+  <button class="shop-tab" onclick="setShopTab('effects',this)">EFFECTS</button>
+ </div>
+ <div id="shopList"></div>
+</section>
+
+<section id="profilePage" class="page">
+ <div class="system-title">PLAYER PROFILE</div>
+
+ <div class="card profile-big">
+  <div class="label">PLAYER</div>
+  <div class="name" style="margin-top:5px">RISHAN</div>
+  <div class="profile-level" id="profileLevel">1</div>
+  <div class="profile-rank" id="profileRank">E-RANK</div>
+  <div class="title-display" id="equippedTitle">UNAWAKENED</div>
+ </div>
+
+ <div class="info-grid">
+  <div class="info"><strong id="profileCoins">100,000,000</strong><span>COINS</span></div>
+  <div class="info"><strong id="profilePower">3</strong><span>POWER</span></div>
+  <div class="info"><strong id="workoutCount">0</strong><span>TRAINING</span></div>
+  <div class="info"><strong id="questCount">0</strong><span>QUESTS</span></div>
+  <div class="info"><strong id="bestStreak">0</strong><span>BEST STREAK</span></div>
+  <div class="info"><strong id="currentStreak">0</strong><span>CURRENT STREAK</span></div>
+ </div>
+
+ <div class="section-head"><h2>ACHIEVEMENTS</h2></div>
+ <div class="card" id="achievementList"></div>
+</section>
+
+</div>
+
+<nav id="bottom-nav">
+ <button class="nav-btn active" onclick="showPage('questPage',this)"><span class="nav-icon">⚔</span>QUEST</button>
+ <button class="nav-btn" onclick="showPage('trainingPage',this)"><span class="nav-icon">◈</span>TRAIN</button>
+ <button class="nav-btn" onclick="showPage('statsPage',this)"><span class="nav-icon">▣</span>STATS</button>
+ <button class="nav-btn" onclick="showPage('shopPage',this)"><span class="nav-icon">🛒</span>SHOP</button>
+ <button class="nav-btn" onclick="showPage('profilePage',this)"><span class="nav-icon">◉</span>PROFILE</button>
+</nav>
+
+<!-- TRAINING BATTLE -->
+<div id="runner">
+ <div class="modal">
+
+  <div class="modal-title" id="runnerType">SYSTEM TRAINING</div>
+
+  <div class="battle-top">
+   <div class="battle-side">
+    <div class="battle-label">PLAYER</div>
+    <div class="battle-value">RISHAN</div>
+    <div class="energy-mini"><div id="battleEnergy"></div></div>
+   </div>
+   <div class="vs">VS</div>
+   <div class="battle-side right">
+    <div class="battle-label">TARGET</div>
+    <div class="battle-value" id="battleTarget">TRAIN</div>
+    <div class="battle-label" id="battleSet">SET 1/3</div>
+   </div>
+  </div>
+
+  <div class="combat-log" id="combatLog">SYSTEM READY</div>
+
+  <div class="exercise-name" id="runnerName">PUSH-UPS</div>
+  <div class="exercise-info" id="runnerInfo">Prepare yourself.</div>
+
+  <div class="set-box">
+   <div class="set-number" id="setNumber">SET 1 / 3</div>
+   <div class="reps" id="repText">10</div>
+   <div class="instruction" id="instruction">Keep your body straight.</div>
+
+   <button id="completeSetBtn" onclick="completeSet()">COMPLETE SET</button>
+
+   <div class="result" id="battleResult" style="display:none">
+    <strong id="resultMain">+40 XP</strong>
+    <span id="resultSub">TRAINING COMPLETE</span>
+   </div>
+  </div>
+
+  <div class="timer" id="restTimer" style="display:none">15</div>
+
+  <div class="modal-actions">
+   <button class="secondary" id="skipRestBtn" onclick="skipRest()" style="display:none">SKIP REST</button>
+   <button class="secondary" onclick="closeRunner()">EXIT</button>
+  </div>
+ </div>
+</div>
+
+<div id="levelup">
+ <div class="levelup-inner">
+  <div class="levelup-title">━━━ LEVEL UP ━━━</div>
+  <div class="level-change"><span id="oldLevel">1</span> → <span id="newLevel">2</span></div>
+  <div class="gains">
+   <div>+5 STRENGTH</div>
+   <div>+3 STAMINA</div>
+   <div>+2 DISCIPLINE</div>
+  </div>
+  <button class="gold" style="width:100%;margin-top:22px" onclick="closeLevelUp()">CONTINUE</button>
+ </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================
+   DAILY QUESTS
+========================= */
+const defaultQuests=[
+ {id:"push",name:"PUSH-UPS",desc:"3 sets × 10 reps",reps:10,xp:25,coins:50,stat:"strength",statGain:2,instruction:"Keep your body straight. Lower your chest under control and push back up."},
+ {id:"squat",name:"SQUATS",desc:"3 sets × 10 reps",reps:10,xp:25,coins:50,stat:"strength",statGain:2,instruction:"Keep your chest up, bend your knees and drive through your feet."},
+ {id:"situp",name:"SIT-UPS",desc:"3 sets × 10 reps",reps:10,xp:25,coins:50,stat:"discipline",statGain:2,instruction:"Use controlled movement. Avoid pulling hard on your neck."},
+ {id:"run",name:"RUN",desc:"3 × 3 minute rounds",reps:"3 MIN",xp:25,coins:50,stat:"stamina",statGain:2,instruction:"Run at a pace you can control. Stop if you feel pain or dizziness."}
+];
+
+/* =========================
+   MUSCLE TRAINING
+========================= */
+const muscles={
+ chest:{name:"CHEST",rewardXP:40,coins:100,energy:15,strength:3,discipline:1,exercises:[
+  ["PUSH-UPS",10,"Controlled chest-focused push-up."],
+  ["WIDE PUSH-UPS",10,"Place your hands slightly wider than shoulder width."],
+  ["DIAMOND PUSH-UPS",8,"Keep your body straight and use controlled repetitions."]
+ ]},
+ back:{name:"BACK",rewardXP:45,coins:100,energy:15,strength:4,discipline:1,exercises:[
+  ["SUPERMAN",12,"Lift your arms and legs under control."],
+  ["REVERSE SNOW ANGELS",10,"Move your arms slowly while keeping your chest stable."],
+  ["BACK EXTENSION",12,"Lift your upper body gently without overextending."]
+ ]},
+ shoulders:{name:"SHOULDERS",rewardXP:40,coins:100,energy:15,strength:3,discipline:1,exercises:[
+  ["PIKE PUSH-UPS",8,"Keep hips raised and lower your head toward the floor."],
+  ["ARM CIRCLES",20,"Perform controlled forward and backward circles."],
+  ["WALL HANDSTAND",1,"Hold a stable wall-supported position."]
+ ]},
+ arms:{name:"ARMS",rewardXP:40,coins:100,energy:15,strength:3,discipline:1,exercises:[
+  ["DIAMOND PUSH-UPS",8,"Keep elbows controlled and body straight."],
+  ["CLOSE PUSH-UPS",10,"Keep your hands closer than normal push-ups."],
+  ["CHAIR DIPS",10,"Use a stable chair and control the downward movement."]
+ ]},
+ legs:{name:"LEGS",rewardXP:50,coins:100,energy:20,strength:4,discipline:2,exercises:[
+  ["SQUATS",15,"Keep your chest up and knees controlled."],
+  ["LUNGES",10,"Step forward and lower yourself under control."],
+  ["CALF RAISES",20,"Rise onto your toes and lower slowly."]
+ ]},
+ core:{name:"CORE",rewardXP:40,coins:100,energy:15,strength:2,discipline:3,exercises:[
+  ["SIT-UPS",12,"Use controlled movement throughout."],
+  ["LEG RAISES",10,"Keep your lower back controlled."],
+  ["PLANK",1,"Hold a straight body position for 30 seconds."]
+ ]}
+};
+
+/* =========================
+   SHOP
+========================= */
+const shopItems={
+ titles:[
+  {id:"rookie",name:"ROOKIE",icon:"⚔️",price:100,desc:"The beginning of your awakening."},
+  {id:"warrior",name:"WARRIOR",icon:"🛡️",price:500,desc:"A title earned through relentless training."},
+  {id:"elite",name:"ELITE",icon:"👑",price:1500,desc:"For players who refuse to stay ordinary."},
+  {id:"awakening",name:"AWAKENED",icon:"✦",price:5000,desc:"Your true potential has begun to awaken."}
+ ],
+ themes:[
+  {id:"system",name:"SYSTEM BLUE",icon:"🔷",price:0,desc:"The standard ARISE system interface.",free:true},
+  {id:"shadow",name:"SHADOW MODE",icon:"🌑",price:750,desc:"A darker system atmosphere."},
+  {id:"royal",name:"ROYAL MODE",icon:"👑",price:2500,desc:"A premium golden system atmosphere."},
+  {id:"void",name:"VOID MODE",icon:"◈",price:7500,desc:"A rare endgame system atmosphere."}
+ ],
+ effects:[
+  {id:"none",name:"STANDARD",icon:"◇",price:0,desc:"Standard level-up display.",free:true},
+  {id:"flash",name:"SYSTEM FLASH",icon:"⚡",price:1000,desc:"Bright system flash during level-up."},
+  {id:"awakening",name:"AWAKENING",icon:"✦",price:3000,desc:"Enhanced awakening-style level-up."},
+  {id:"legend",name:"LEGENDARY",icon:"☄",price:10000,desc:"A rare legendary level-up effect."}
+ ]
+};
+
+/* =========================
+   STORAGE
+========================= */
+let xp=Number(localStorage.getItem("ariseXP"))||0;
+let level=Number(localStorage.getItem("ariseLevel"))||1;
+let strength=Number(localStorage.getItem("ariseStrength"))||1;
+let stamina=Number(localStorage.getItem("ariseStamina"))||1;
+let discipline=Number(localStorage.getItem("ariseDiscipline"))||1;
+let workouts=Number(localStorage.getItem("ariseWorkouts"))||0;
+let completedQuests=Number(localStorage.getItem("ariseCompletedQuests"))||0;
+
+/* 100,000,000 STARTING COINS — ONLY ON FIRST SEED */
+let coins=Number(localStorage.getItem("ariseCoins"));
+let coinSeeded=localStorage.getItem("ariseCoinSeeded");
+
+if(!coinSeeded){
+ coins=100000000;
+ localStorage.setItem("ariseCoins",coins);
+ localStorage.setItem("ariseCoinSeeded","true");
+}else if(isNaN(coins)){
+ coins=100000000;
+}
+
+let hp=Number(localStorage.getItem("ariseHP"));
+if(isNaN(hp))hp=100;
+
+let energy=Number(localStorage.getItem("ariseEnergy"));
+if(isNaN(energy))energy=100;
+
+let streak=Number(localStorage.getItem("ariseStreak"))||0;
+let bestStreak=Number(localStorage.getItem("ariseBestStreak"))||0;
+let lastStreakDate=localStorage.getItem("ariseLastStreakDate")||"";
+let achievements=JSON.parse(localStorage.getItem("ariseAchievements")||"[]");
+let questState=JSON.parse(localStorage.getItem("ariseQuestState")||"{}");
+let questDate=localStorage.getItem("ariseQuestDate")||"";
+let ownedItems=JSON.parse(localStorage.getItem("ariseOwnedItems")||"[]");
+let equippedTitle=localStorage.getItem("ariseEquippedTitle")||"";
+let equippedTheme=localStorage.getItem("ariseEquippedTheme")||"system";
+let equippedEffect=localStorage.getItem("ariseEquippedEffect")||"none";
+
+/* =========================
+   SAVE
+========================= */
+function save(){
+ localStorage.setItem("ariseXP",xp);
+ localStorage.setItem("ariseLevel",level);
+ localStorage.setItem("ariseStrength",strength);
+ localStorage.setItem("ariseStamina",stamina);
+ localStorage.setItem("ariseDiscipline",discipline);
+ localStorage.setItem("ariseWorkouts",workouts);
+ localStorage.setItem("ariseCompletedQuests",completedQuests);
+ localStorage.setItem("ariseCoins",coins);
+ localStorage.setItem("ariseHP",hp);
+ localStorage.setItem("ariseEnergy",energy);
+ localStorage.setItem("ariseStreak",streak);
+ localStorage.setItem("ariseBestStreak",bestStreak);
+ localStorage.setItem("ariseLastStreakDate",lastStreakDate);
+ localStorage.setItem("ariseAchievements",JSON.stringify(achievements));
+ localStorage.setItem("ariseQuestState",JSON.stringify(questState));
+ localStorage.setItem("ariseQuestDate",questDate);
+ localStorage.setItem("ariseOwnedItems",JSON.stringify(ownedItems));
+ localStorage.setItem("ariseEquippedTitle",equippedTitle);
+ localStorage.setItem("ariseEquippedTheme",equippedTheme);
+ localStorage.setItem("ariseEquippedEffect",equippedEffect);
+}
+
+/* =========================
+   DATE / RANK / POWER
+========================= */
+function today(){
+ const d=new Date();
+ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function prepareDailyQuests(){
+ const t=today();
+ if(questDate!==t){
+  questDate=t;
+  questState={};
+  save();
+ }
+}
+function getRank(){
+ if(level>=30)return"S-RANK";
+ if(level>=20)return"A-RANK";
+ if(level>=12)return"B-RANK";
+ if(level>=7)return"C-RANK";
+ if(level>=3)return"D-RANK";
+ return"E-RANK";
+}
+function getPower(){return strength+stamina+discipline}
+
+/* =========================
+   XP
+========================= */
+function xpNeeded(){return level*100}
+
+function gainXP(amount){
+ xp+=amount;
+ let leveled=false;
+ let oldLevel=level;
+
+ while(xp>=xpNeeded()){
+  xp-=xpNeeded();
+  level++;
+  strength+=5;
+  stamina+=3;
+  discipline+=2;
+  leveled=true;
+ }
+
+ save();
+ updateUI();
+
+ if(leveled)showLevelUp(oldLevel,level);
+}
+
+/* =========================
+   COINS
+========================= */
+function gainCoins(amount){
+ coins+=amount;
+ save();
+ updateUI();
+ showToast("🪙 +"+amount+" COINS");
+}
+
+/* =========================
+   STREAKS
+========================= */
+function updateStreak(){
+ const t=today();
+ if(lastStreakDate===t)return;
+
+ if(lastStreakDate){
+  const previous=new Date(lastStreakDate);
+  const current=new Date(t);
+  const difference=Math.round((current-previous)/(1000*60*60*24));
+  streak=difference===1?streak+1:1;
+ }else{
+  streak=1;
+ }
+
+ lastStreakDate=t;
+ if(streak>bestStreak)bestStreak=streak;
+ save();
+}
+
+/* =========================
+   ACHIEVEMENTS
+========================= */
+const achievementData=[
+ ["first","⚔","FIRST QUEST","Complete your first daily quest."],
+ ["hunter","◈","QUEST HUNTER","Complete 5 daily quests."],
+ ["master","★","QUEST MASTER","Complete 10 daily quests."],
+ ["awakening","◆","AWAKENING","Complete your first training session."],
+ ["trained","◇","TRAINED","Complete 5 training sessions."],
+ ["power","⚡","POWER GROWTH","Reach level 5."],
+ ["unbroken","🔥","UNBROKEN","Reach a 3-day streak."],
+ ["disciplined","☄","DISCIPLINED","Reach a 7-day streak."]
+];
+
+function unlock(id){
+ if(!achievements.includes(id)){
+  achievements.push(id);
+  save();
+  const found=achievementData.find(a=>a[0]===id);
+  if(found)showToast("ACHIEVEMENT UNLOCKED: "+found[2]);
+ }
+}
+function checkAchievements(){
+ if(completedQuests>=1)unlock("first");
+ if(completedQuests>=5)unlock("hunter");
+ if(completedQuests>=10)unlock("master");
+ if(workouts>=1)unlock("awakening");
+ if(workouts>=5)unlock("trained");
+ if(level>=5)unlock("power");
+ if(streak>=3)unlock("unbroken");
+ if(streak>=7)unlock("disciplined");
+ save();
+}
+
+/* =========================
+   QUESTS
+========================= */
+function renderQuests(){
+ prepareDailyQuests();
+ const container=document.getElementById("questList");
+ container.innerHTML="";
+
+ defaultQuests.forEach(q=>{
+  const completed=questState[q.id]===true;
+  const div=document.createElement("div");
+  div.className="quest";
+  div.innerHTML=`
+   <div class="quest-top">
+    <div>
+     <div class="quest-name">${q.name}</div>
+     <div class="quest-desc">${q.desc}</div>
+    </div>
+    <div class="reward">+${q.xp} XP<br>+${q.coins} 🪙</div>
+   </div>
+   <div class="quest-bottom">
+    ${completed
+     ?`<div class="done">✓ QUEST COMPLETE</div>`
+     :`<button onclick="startQuest('${q.id}')">START QUEST</button>`}
+   </div>`;
+  container.appendChild(div);
+ });
+}
+
+/* =========================
+   TRAINING
+========================= */
+function renderMuscles(){
+ const grid=document.getElementById("muscleGrid");
+ grid.innerHTML="";
+
+ Object.keys(muscles).forEach(key=>{
+  const m=muscles[key];
+  const div=document.createElement("div");
+  div.className="muscle";
+  div.innerHTML=`
+   <h3>${m.name}</h3>
+   <p>3 exercises · ${m.energy} energy · +${m.rewardXP} XP</p>
+   <button style="width:100%" onclick="startTraining('${key}')" ${energy<m.energy?"disabled":""}>
+    ⚔ TRAIN
+   </button>`;
+  grid.appendChild(div);
+ });
+}
+
+/* =========================
+   SHOP
+========================= */
+let currentShopTab="titles";
+
+function setShopTab(tab,button){
+ currentShopTab=tab;
+ document.querySelectorAll(".shop-tab").forEach(b=>b.classList.remove("active"));
+ button.classList.add("active");
+ renderShop();
+}
+function getShopItem(tab,id){return shopItems[tab].find(item=>item.id===id)}
+function isOwned(id){return ownedItems.includes(id)}
+
+function renderShop(){
+ const list=document.getElementById("shopList");
+ list.innerHTML="";
+
+ shopItems[currentShopTab].forEach(item=>{
+  const owned=isOwned(item.id);
+  let equipped=false;
+
+  if(currentShopTab==="titles")equipped=equippedTitle===item.id;
+  if(currentShopTab==="themes")equipped=equippedTheme===item.id;
+  if(currentShopTab==="effects")equipped=equippedEffect===item.id;
+
+  let action="";
+
+  if(equipped){
+   action=`<button class="secondary" disabled>EQUIPPED</button>`;
+  }else if(owned){
+   action=`<button class="secondary" onclick="equipItem('${currentShopTab}','${item.id}')">EQUIP</button>`;
+  }else if(item.free){
+   action=`<button onclick="buyItem('${currentShopTab}','${item.id}')">CLAIM</button>`;
+  }else{
+   action=`<button onclick="buyItem('${currentShopTab}','${item.id}')" ${coins<item.price?"disabled":""}>BUY</button>`;
+  }
+
+  const div=document.createElement("div");
+  div.className="shop-item "+(owned?"owned ":"")+(equipped?"equipped":"");
+
+  div.innerHTML=`
+   ${equipped?`<div class="equipped-badge">EQUIPPED</div>`:""}
+   <div class="shop-item-top">
+    <div class="shop-icon">${item.icon}</div>
+    <div><h3>${item.name}</h3><p>${item.desc}</p></div>
+   </div>
+   <div class="price">
+    <span>${item.free?"FREE":"🪙 "+item.price.toLocaleString()}</span>
+    ${action}
+   </div>`;
+
+  list.appendChild(div);
+ });
+
+ document.getElementById("shopCoins").textContent=coins.toLocaleString();
+}
+
+function buyItem(tab,id){
+ const item=getShopItem(tab,id);
+ if(!item)return;
+
+ if(isOwned(id)){
+  equipItem(tab,id);
+  return;
+ }
+
+ if(!item.free&&coins<item.price){
+  showToast("NOT ENOUGH COINS");
+  return;
+ }
+
+ if(!item.free)coins-=item.price;
+
+ ownedItems.push(id);
+ save();
+ showToast("UNLOCKED: "+item.name);
+ renderShop();
+ updateUI();
+}
+
+function equipItem(tab,id){
+ const item=getShopItem(tab,id);
+ if(!item||!isOwned(id))return;
+
+ if(tab==="titles")equippedTitle=id;
+ if(tab==="themes"){equippedTheme=id;applyTheme()}
+ if(tab==="effects")equippedEffect=id;
+
+ save();
+ showToast("EQUIPPED: "+item.name);
+ renderShop();
+ updateUI();
+}
+
+/* =========================
+   THEMES
+========================= */
+function applyTheme(){
+ const root=document.documentElement;
+
+ if(equippedTheme==="system"){
+  root.style.setProperty("--cyan","#72e8ff");
+  root.style.setProperty("--blue","#3ba7ff");
+  root.style.setProperty("--gold","#ffd45c");
+  root.style.setProperty("--green","#6dffb1");
+ }
+ if(equippedTheme==="shadow"){
+  root.style.setProperty("--cyan","#b48cff");
+  root.style.setProperty("--blue","#7040d8");
+  root.style.setProperty("--gold","#d6a8ff");
+  root.style.setProperty("--green","#a58cff");
+ }
+ if(equippedTheme==="royal"){
+  root.style.setProperty("--cyan","#ffd86b");
+  root.style.setProperty("--blue","#d99b25");
+  root.style.setProperty("--gold","#ffe08a");
+  root.style.setProperty("--green","#ffeab0");
+ }
+ if(equippedTheme==="void"){
+  root.style.setProperty("--cyan","#ff66d9");
+  root.style.setProperty("--blue","#8d3cff");
+  root.style.setProperty("--gold","#ff8bea");
+  root.style.setProperty("--green","#c98cff");
+ }
+}
+
+/* =========================
+   TRAINING RUNNER
+========================= */
+let runnerMode="";
+let currentQuest=null;
+let currentMuscle=null;
+let currentExercise=0;
+let currentSet=1;
+let restInterval=null;
+let restSeconds=0;
+
+function startQuest(id){
+ const q=defaultQuests.find(x=>x.id===id);
+ if(!q)return;
+
+ currentQuest=q;
+ runnerMode="quest";
+ currentExercise=0;
+ currentSet=1;
+ openRunner();
+ updateQuestRunner();
+}
+
+function startTraining(key){
+ const m=muscles[key];
+
+ if(!m)return;
+
+ if(energy<m.energy){
+  showToast("NOT ENOUGH ENERGY");
+  return;
+ }
+
+ currentMuscle=m;
+ runnerMode="training";
+ currentExercise=0;
+ currentSet=1;
+
+ openRunner();
+ updateTrainingRunner();
+}
+
+function openRunner(){
+ document.getElementById("runner").classList.add("show");
+ document.getElementById("battleResult").style.display="none";
+ document.getElementById("completeSetBtn").style.display="inline-block";
+ updateBattleHUD();
+}
+
+function closeRunner(){
+ stopTimer();
+ document.getElementById("runner").classList.remove("show");
+ runnerMode="";
+ currentQuest=null;
+ currentMuscle=null;
+}
+
+function updateBattleHUD(){
+ document.getElementById("battleEnergy").style.width=Math.max(0,energy)+"%";
+ document.getElementById("battleTarget").textContent=
+  runnerMode==="training"?(currentMuscle?.name||"TRAIN"):(currentQuest?.name||"QUEST");
+ document.getElementById("battleSet").textContent="SET "+currentSet+"/3";
+}
+
+function updateQuestRunner(){
+ const q=currentQuest;
+
+ document.getElementById("runnerType").textContent="DAILY QUEST";
+ document.getElementById("runnerName").textContent=q.name;
+ document.getElementById("runnerInfo").textContent=q.desc;
+ document.getElementById("setNumber").textContent="SET "+currentSet+" / 3";
+ document.getElementById("repText").textContent=q.reps;
+ document.getElementById("instruction").textContent=q.instruction;
+ document.getElementById("completeSetBtn").textContent=currentSet<3?"COMPLETE SET":"COMPLETE QUEST";
+ document.getElementById("combatLog").textContent="SYSTEM: QUEST BATTLE READY";
+ updateBattleHUD();
+}
+
+function updateTrainingRunner(){
+ const m=currentMuscle;
+ const exercise=m.exercises[currentExercise];
+
+ document.getElementById("runnerType").textContent=m.name+" TRAINING";
+ document.getElementById("runnerName").textContent=exercise[0];
+ document.getElementById("runnerInfo").textContent=
+  "EXERCISE "+(currentExercise+1)+" / "+m.exercises.length;
+ document.getElementById("setNumber").textContent="SET "+currentSet+" / 3";
+ document.getElementById("repText").textContent=exercise[1];
+ document.getElementById("instruction").textContent=exercise[2];
+
+ const finalSet=currentSet===3;
+ const finalExercise=currentExercise===m.exercises.length-1;
+
+ document.getElementById("completeSetBtn").textContent=
+  finalSet&&finalExercise?"COMPLETE TRAINING":"COMPLETE SET";
+
+ document.getElementById("combatLog").textContent=
+  "SYSTEM: "+m.name+" TARGET LOCKED";
+
+ updateBattleHUD();
+}
+
+function completeSet(){
+ if(runnerMode==="quest")completeQuestSet();
+ if(runnerMode==="training")completeTrainingSet();
+}
+
+/* =========================
+   QUEST FINISH
+========================= */
+function completeQuestSet(){
+ if(currentSet<3){
+  currentSet++;
+  document.getElementById("combatLog").textContent="SYSTEM: SET CLEARED · REST";
+  startRest(()=>updateQuestRunner());
+  return;
+ }
+ finishQuest();
+}
+
+function finishQuest(){
+ const q=currentQuest;
+
+ questState[q.id]=true;
+ completedQuests++;
+
+ if(q.stat==="strength")strength+=q.statGain;
+ if(q.stat==="stamina")stamina+=q.statGain;
+ if(q.stat==="discipline")discipline+=q.statGain;
+
+ hp=Math.min(100,hp+5);
+ energy=Math.max(0,energy-5);
+
+ gainXP(q.xp);
+ gainCoins(q.coins);
+
+ updateStreak();
+ checkAchievements();
+ save();
+ updateUI();
+
+ showBattleResult("QUEST CLEAR","+"+q.xp+" XP · +"+q.coins+" COINS");
+
+ setTimeout(()=>{
+  closeRunner();
+  showToast("⚔ QUEST COMPLETE");
+ },900);
+}
+
+/* =========================
+   TRAINING FINISH
+========================= */
+function completeTrainingSet(){
+ const m=currentMuscle;
+ const finalSet=currentSet===3;
+ const finalExercise=currentExercise===m.exercises.length-1;
+
+ if(!finalSet){
+  currentSet++;
+  document.getElementById("combatLog").textContent="SYSTEM: SET CLEARED · REST";
+  startRest(()=>updateTrainingRunner());
+  return;
+ }
+
+ if(!finalExercise){
+  currentExercise++;
+  currentSet=1;
+  document.getElementById("combatLog").textContent="SYSTEM: EXERCISE CLEARED · REST";
+  startRest(()=>updateTrainingRunner());
+  return;
+ }
+
+ finishTraining();
+}
+
+function finishTraining(){
+ const m=currentMuscle;
+
+ energy=Math.max(0,energy-m.energy);
+ hp=Math.max(1,hp-Math.min(10,m.energy/2));
+
+ strength+=m.strength;
+ discipline+=m.discipline;
+ workouts++;
+
+ gainXP(m.rewardXP);
+ gainCoins(m.coins);
+
+ checkAchievements();
+ save();
+ updateUI();
+
+ showBattleResult(
+  "TRAINING CLEAR",
+  "+"+m.rewardXP+" XP · +"+m.coins+" COINS"
+ );
+
+ setTimeout(()=>{
+  closeRunner();
+  showToast("⚔ TRAINING COMPLETE");
+ },1000);
+}
+
+function showBattleResult(title,sub){
+ document.getElementById("completeSetBtn").style.display="none";
+ document.getElementById("battleResult").style.display="block";
+ document.getElementById("resultMain").textContent=title;
+ document.getElementById("resultSub").textContent=sub;
+ document.getElementById("combatLog").textContent="SYSTEM: MISSION COMPLETE";
+}
+
+/* =========================
+   REST
+========================= */
+function startRest(callback){
+ clearInterval(restInterval);
+
+ restSeconds=15;
+
+ const timer=document.getElementById("restTimer");
+ const skip=document.getElementById("skipRestBtn");
+ const complete=document.getElementById("completeSetBtn");
+
+ timer.style.display="block";
+ skip.style.display="block";
+ complete.style.display="none";
+ timer.textContent=restSeconds;
+
+ restInterval=setInterval(()=>{
+  restSeconds--;
+  timer.textContent=restSeconds;
+
+  if(restSeconds<=0){
+   clearInterval(restInterval);
+   timer.style.display="none";
+   skip.style.display="none";
+   complete.style.display="inline-block";
+   callback();
+  }
+ },1000);
+}
+
+function skipRest(){
+ clearInterval(restInterval);
+
+ document.getElementById("restTimer").style.display="none";
+ document.getElementById("skipRestBtn").style.display="none";
+ document.getElementById("completeSetBtn").style.display="inline-block";
+
+ if(runnerMode==="quest")updateQuestRunner();
+ else updateTrainingRunner();
+}
+
+function stopTimer(){
+ clearInterval(restInterval);
+ document.getElementById("restTimer").style.display="none";
+ document.getElementById("skipRestBtn").style.display="none";
+ document.getElementById("completeSetBtn").style.display="inline-block";
+}
+
+/* =========================
+   RECOVERY
+========================= */
+function recoverPlayer(){
+ hp=100;
+ energy=100;
+ save();
+ updateUI();
+ showToast("RECOVERY COMPLETE");
+}
+
+/* =========================
+   LEVEL UP
+========================= */
+function showLevelUp(oldLevel,newLevel){
+ document.getElementById("oldLevel").textContent=oldLevel;
+ document.getElementById("newLevel").textContent=newLevel;
+ document.getElementById("levelup").classList.add("show");
+}
+function closeLevelUp(){
+ document.getElementById("levelup").classList.remove("show");
+ checkAchievements();
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+function showPage(pageId,button){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(pageId).classList.add("active");
+ document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+ button.classList.add("active");
+ updateUI();
+}
+
+/* =========================
+   ACHIEVEMENTS
+========================= */
+function renderAchievements(){
+ const list=document.getElementById("achievementList");
+ list.innerHTML="";
+
+ achievementData.forEach(a=>{
+  const unlocked=achievements.includes(a[0]);
+  const div=document.createElement("div");
+  div.className="achievement "+(unlocked?"":"locked");
+
+  div.innerHTML=`
+   <div class="ach-icon">${unlocked?a[1]:"🔒"}</div>
+   <div><strong>${a[2]}</strong><span>${a[3]}</span></div>`;
+
+  list.appendChild(div);
+ });
+}
+
+/* =========================
+   UI
+========================= */
+function updateUI(){
+ prepareDailyQuests();
+
+ const needed=xpNeeded();
+
+ document.getElementById("levelText").textContent=level;
+ document.getElementById("rankText").textContent=getRank();
+ document.getElementById("xpText").textContent=xp+" / "+needed+" XP";
+ document.getElementById("xpBar").style.width=Math.min(100,(xp/needed)*100)+"%";
+
+ document.getElementById("coinText").textContent=coins.toLocaleString();
+ document.getElementById("hpText").textContent=Math.round(hp);
+ document.getElementById("energyText").textContent=Math.round(energy);
+ document.getElementById("powerText").textContent=getPower();
+
+ document.getElementById("trainingEnergy").textContent=Math.round(energy);
+
+ document.getElementById("strengthValue").textContent=strength;
+ document.getElementById("staminaValue").textContent=stamina;
+ document.getElementById("disciplineValue").textContent=discipline;
+
+ const maxStat=Math.max(50,strength,stamina,discipline);
+
+ document.getElementById("strengthBar").style.width=Math.min(100,(strength/maxStat)*100)+"%";
+ document.getElementById("staminaBar").style.width=Math.min(100,(stamina/maxStat)*100)+"%";
+ document.getElementById("disciplineBar").style.width=Math.min(100,(discipline/maxStat)*100)+"%";
+
+ document.getElementById("statsPower").textContent=getPower();
+
+ document.getElementById("profileLevel").textContent=level;
+ document.getElementById("profileRank").textContent=getRank();
+ document.getElementById("profileCoins").textContent=coins.toLocaleString();
+ document.getElementById("profilePower").textContent=getPower();
+ document.getElementById("workoutCount").textContent=workouts;
+ document.getElementById("questCount").textContent=completedQuests;
+ document.getElementById("bestStreak").textContent=bestStreak;
+ document.getElementById("currentStreak").textContent=streak;
+ document.getElementById("streakText").textContent="🔥 "+streak+" DAY STREAK";
+ document.getElementById("shopCoins").textContent=coins.toLocaleString();
+
+ const title=shopItems.titles.find(x=>x.id===equippedTitle);
+ document.getElementById("equippedTitle").textContent=title?title.name:"UNAWAKENED";
+
+ renderQuests();
+ renderMuscles();
+ renderAchievements();
+ renderShop();
+}
+
+/* =========================
+   TOAST
+========================= */
+let toastTimeout;
+
+function showToast(message){
+ const toast=document.getElementById("toast");
+ toast.textContent=message;
+ toast.classList.add("show");
+ clearTimeout(toastTimeout);
+ toastTimeout=setTimeout(()=>toast.classList.remove("show"),2200);
+}
+
+/* =========================
+   START
+========================= */
+prepareDailyQuests();
+checkAchievements();
+applyTheme();
+save();
+updateUI();
+</script>
+<script>
+/* =====================================================
+   ARISE MEGA RPG UPGRADE
+   QUEST 2.0 + RANK PROGRESSION + SKILL TREE
+===================================================== */
+
+(function(){
+
+/* ---------- NEW STORAGE ---------- */
+
+let skillPoints=Number(localStorage.getItem("ariseSkillPoints"));
+if(isNaN(skillPoints))skillPoints=0;
+
+let unlockedSkills=JSON.parse(localStorage.getItem("ariseSkills")||"[]");
+
+let rankRewards=JSON.parse(localStorage.getItem("ariseRankRewards")||"[]");
+
+let lastKnownRank=localStorage.getItem("ariseLastRank")||getRank();
+
+let specialQuestState=localStorage.getItem("ariseSpecialQuestDate")||"";
+
+/* ---------- SKILLS ---------- */
+
+const ariseSkills={
+
+ power:{
+  name:"POWER SURGE",
+  icon:"⚔",
+  cost:1,
+  desc:"+5% Strength training gains.",
+  rank:"E-RANK"
+ },
+
+ stamina:{
+  name:"SECOND WIND",
+  icon:"⚡",
+  cost:1,
+  desc:"Training uses 5% less Energy.",
+  rank:"D-RANK"
+ },
+
+ discipline:{
+  name:"IRON MIND",
+  icon:"◆",
+  cost:1,
+  desc:"+5% XP from daily quests.",
+  rank:"C-RANK"
+ },
+
+ recovery:{
+  name:"RAPID RECOVERY",
+  icon:"❤",
+  cost:2,
+  desc:"Recovery restores an additional 20 HP.",
+  rank:"B-RANK"
+ },
+
+ warrior:{
+  name:"WARRIOR INSTINCT",
+  icon:"☄",
+  cost:2,
+  desc:"+10% training XP.",
+  rank:"A-RANK"
+ },
+
+ awakening:{
+  name:"AWAKENING",
+  icon:"✦",
+  cost:3,
+  desc:"+10 Combat Power bonus.",
+  rank:"S-RANK"
+ }
+
+};
+
+function skillRankLevel(rank){
+
+ if(rank==="E-RANK")return 1;
+ if(rank==="D-RANK")return 3;
+ if(rank==="C-RANK")return 7;
+ if(rank==="B-RANK")return 12;
+ if(rank==="A-RANK")return 20;
+ if(rank==="S-RANK")return 30;
+
+ return 1;
+}
+
+function hasSkill(id){
+ return unlockedSkills.includes(id);
+}
+
+function saveMegaData(){
+
+ localStorage.setItem("ariseSkillPoints",skillPoints);
+ localStorage.setItem("ariseSkills",JSON.stringify(unlockedSkills));
+ localStorage.setItem("ariseRankRewards",JSON.stringify(rankRewards));
+ localStorage.setItem("ariseLastRank",lastKnownRank);
+
+}
+
+/* ---------- SKILL POINTS ---------- */
+
+function gainSkillPoint(amount=1){
+
+ skillPoints+=amount;
+
+ saveMegaData();
+
+ showToast("✦ +"+amount+" SKILL POINT");
+
+}
+
+/* ---------- RANK REWARD ---------- */
+
+function checkRankProgression(){
+
+ const currentRank=getRank();
+
+ if(currentRank!==lastKnownRank){
+
+  if(!rankRewards.includes(currentRank)){
+
+   rankRewards.push(currentRank);
+
+   gainSkillPoint(1);
+
+   strength+=2;
+   stamina+=2;
+   discipline+=2;
+
+   saveMegaData();
+   save();
+
+   showRankUp(currentRank);
+
+  }
+
+  lastKnownRank=currentRank;
+  saveMegaData();
+ }
+
+}
+
+function showRankUp(rank){
+
+ let old=document.getElementById("ariseRankModal");
+
+ if(old)old.remove();
+
+ const box=document.createElement("div");
+
+ box.id="ariseRankModal";
+
+ box.style.cssText=`
+ position:absolute;
+ inset:0;
+ z-index:120;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ background:rgba(1,4,8,.97);
+ `;
+
+ box.innerHTML=`
+ <div style="
+ width:calc(100% - 30px);
+ padding:28px 18px;
+ text-align:center;
+ border:1px solid var(--cyan);
+ background:linear-gradient(145deg,#0b1823,#03070b);
+ box-shadow:0 0 70px rgba(114,232,255,.2);
+ ">
+
+ <div style="
+ color:var(--cyan);
+ font-size:10px;
+ letter-spacing:6px;
+ ">SYSTEM NOTIFICATION</div>
+
+ <div style="
+ margin-top:25px;
+ color:#738596;
+ font-size:9px;
+ letter-spacing:3px;
+ ">RANK ASCENSION</div>
+
+ <div style="
+ margin:14px 0;
+ font-size:42px;
+ font-weight:900;
+ color:var(--gold);
+ ">${rank}</div>
+
+ <div style="
+ color:var(--green);
+ font-size:12px;
+ line-height:2;
+ ">
+ +1 SKILL POINT<br>
+ +2 STRENGTH<br>
+ +2 STAMINA<br>
+ +2 DISCIPLINE
+ </div>
+
+ <button
+ onclick="document.getElementById('ariseRankModal').remove()"
+ style="width:100%;margin-top:25px">
+ CONTINUE
+ </button>
+
+ </div>
+ `;
+
+ document.getElementById("app").appendChild(box);
+}
+
+/* ---------- SKILL TREE PAGE ---------- */
+
+function createSkillPage(){
+
+ if(document.getElementById("skillPage"))return;
+
+ const page=document.createElement("section");
+
+ page.id="skillPage";
+ page.className="page";
+
+ page.innerHTML=`
+
+ <div class="system-title">SKILL TREE</div>
+
+ <div class="card" style="text-align:center">
+
+  <div class="label">AVAILABLE SKILL POINTS</div>
+
+  <div style="
+   font-size:38px;
+   font-weight:900;
+   color:var(--cyan);
+   margin-top:6px
+  " id="skillPointDisplay">
+   ${skillPoints}
+  </div>
+
+  <div style="
+   color:#708392;
+   font-size:9px;
+   margin-top:5px
+  ">
+   Earn points by ranking up.
+  </div>
+
+ </div>
+
+ <div id="skillTreeList"></div>
+
+ `;
+
+ document.getElementById("content").appendChild(page);
+
+ renderSkillTree();
+
+}
+
+function renderSkillTree(){
+
+ const list=document.getElementById("skillTreeList");
+
+ if(!list)return;
+
+ list.innerHTML="";
+
+ Object.keys(ariseSkills).forEach(id=>{
+
+  const s=ariseSkills[id];
+
+  const required=skillRankLevel(s.rank);
+
+  const unlocked=hasSkill(id);
+
+  const levelLocked=level<required;
+
+  const pointLocked=skillPoints<s.cost;
+
+  const locked=levelLocked||pointLocked;
+
+  let button="";
+
+  if(unlocked){
+
+   button=`
+   <button
+    class="secondary"
+    disabled>
+    ✓ UNLOCKED
+   </button>`;
+
+  }else if(levelLocked){
+
+   button=`
+   <button
+    class="secondary"
+    disabled>
+    REQUIRES LEVEL ${required}
+   </button>`;
+
+  }else if(pointLocked){
+
+   button=`
+   <button
+    class="secondary"
+    disabled>
+    NEED ${s.cost} POINT${s.cost>1?"S":""}
+   </button>`;
+
+  }else{
+
+   button=`
+   <button
+    onclick="unlockAriseSkill('${id}')">
+    UNLOCK · ${s.cost} ✦
+   </button>`;
+
+  }
+
+  const div=document.createElement("div");
+
+  div.className="card";
+
+  div.style.opacity=unlocked?"1":locked?".55":"1";
+
+  div.innerHTML=`
+
+   <div style="
+    display:flex;
+    align-items:center;
+    gap:12px
+   ">
+
+    <div style="
+     width:48px;
+     height:48px;
+     display:flex;
+     align-items:center;
+     justify-content:center;
+     border:1px solid #2b3e4d;
+     background:#080e15;
+     font-size:24px
+    ">
+     ${s.icon}
+    </div>
+
+    <div style="flex:1">
+
+     <div style="
+      font-size:13px;
+      font-weight:900;
+      letter-spacing:1px
+     ">
+      ${s.name}
+     </div>
+
+     <div style="
+      color:var(--gold);
+      font-size:8px;
+      letter-spacing:2px;
+      margin-top:4px
+     ">
+      ${s.rank}
+     </div>
+
+     <div style="
+      color:#718493;
+      font-size:9px;
+      line-height:1.5;
+      margin-top:5px
+     ">
+      ${s.desc}
+     </div>
+
+    </div>
+
+   </div>
+
+   <div style="
+    margin-top:12px;
+    text-align:right
+   ">
+    ${button}
+   </div>
+  `;
+
+  list.appendChild(div);
+
+ });
+
+ const point=document.getElementById("skillPointDisplay");
+
+ if(point)point.textContent=skillPoints;
+
+}
+
+function unlockAriseSkill(id){
+
+ const s=ariseSkills[id];
+
+ if(!s)return;
+
+ if(hasSkill(id)){
+  showToast("SKILL ALREADY UNLOCKED");
+  return;
+ }
+
+ if(level<skillRankLevel(s.rank)){
+  showToast("RANK/LEVEL TOO LOW");
+  return;
+ }
+
+ if(skillPoints<s.cost){
+  showToast("NOT ENOUGH SKILL POINTS");
+  return;
+ }
+
+ skillPoints-=s.cost;
+
+ unlockedSkills.push(id);
+
+ saveMegaData();
+
+ renderSkillTree();
+ updateUI();
+
+ showToast("✦ SKILL UNLOCKED: "+s.name);
+
+}
+
+/* ---------- ADD SKILL NAV ---------- */
+
+function createSkillNav(){
+
+ const nav=document.getElementById("bottom-nav");
+
+ if(!nav)return;
+
+ if(document.getElementById("skillNav"))return;
+
+ const button=document.createElement("button");
+
+ button.id="skillNav";
+ button.className="nav-btn";
+
+ button.innerHTML=`
+ <span class="nav-icon">✦</span>
+ SKILL
+ `;
+
+ button.onclick=function(){
+  showPage("skillPage",button);
+  renderSkillTree();
+ };
+
+ nav.appendChild(button);
+
+ nav.style.gridTemplateColumns="repeat(6,1fr)";
+
+}
+
+/* ---------- QUEST 2.0 ---------- */
+
+const questDifficulty={
+
+ easy:{
+  label:"EASY",
+  xp:1,
+  coins:1,
+  color:"#6dffb1"
+ },
+
+ normal:{
+  label:"NORMAL",
+  xp:1.5,
+  coins:1.5,
+  color:"#72e8ff"
+ },
+
+ hard:{
+  label:"HARD",
+  xp:2,
+  coins:2,
+  color:"#ff5f72"
+ }
+
+};
+
+function questMultiplier(q){
+
+ let d=questDifficulty[q.difficulty||"normal"];
+
+ let multiplier=d.xp;
+
+ if(hasSkill("discipline"))multiplier*=1.05;
+
+ if(streak>=3)multiplier*=1.10;
+
+ return multiplier;
+
+}
+
+function questCoinMultiplier(q){
+
+ let d=questDifficulty[q.difficulty||"normal"];
+
+ let multiplier=d.coins;
+
+ if(streak>=7)multiplier*=1.25;
+
+ return multiplier;
+
+}
+
+function specialQuest(){
+
+ const t=today();
+
+ if(specialQuestState===t){
+
+  return {
+   id:"special-complete",
+   name:"SPECIAL QUEST",
+   desc:"Today's special mission has been completed.",
+   reps:20,
+   xp:100,
+   coins:250,
+   stat:"strength",
+   statGain:4,
+   difficulty:"hard",
+   instruction:"Special mission complete."
+  };
+
+ }
+
+ return {
+  id:"special",
+  name:"SYSTEM SPECIAL",
+  desc:"50 PUSH-UPS · Special Daily Mission",
+  reps:50,
+  xp:100,
+  coins:250,
+  stat:"strength",
+  statGain:4,
+  difficulty:"hard",
+  instruction:"Complete 50 controlled push-ups. Break them into safe sets if necessary."
+ };
+
+}
+
+/* ---------- NEW QUEST RENDER ---------- */
+
+window.renderQuests=function(){
+
+ prepareDailyQuests();
+
+ const container=document.getElementById("questList");
+
+ if(!container)return;
+
+ container.innerHTML="";
+
+ const all=[...defaultQuests,specialQuest()];
+
+ all.forEach(q=>{
+
+  const completed=q.id==="special"
+   ?specialQuestState===today()
+   :questState[q.id]===true;
+
+  const d=questDifficulty[q.difficulty||"normal"];
+
+  const xpReward=Math.round(q.xp*questMultiplier(q));
+  const coinReward=Math.round(q.coins*questCoinMultiplier(q));
+
+  const div=document.createElement("div");
+
+  div.className="quest";
+
+  div.style.borderColor=d.color;
+
+  div.innerHTML=`
+
+   <div class="quest-top">
+
+    <div>
+
+     <div class="quest-name">
+
+      ${q.name}
+
+      <span style="
+       color:${d.color};
+       font-size:8px;
+       margin-left:5px
+      ">
+       ${d.label}
+      </span>
+
+     </div>
+
+     <div class="quest-desc">${q.desc}</div>
+
+    </div>
+
+    <div class="reward">
+
+     +${xpReward} XP<br>
+     +${coinReward} 🪙
+
+    </div>
+
+   </div>
+
+   <div style="
+    margin-top:9px;
+    color:#657887;
+    font-size:8px
+   ">
+
+    ${streak>=3?"🔥 STREAK BONUS ACTIVE":""}
+
+   </div>
+
+   <div class="quest-bottom" style="margin-top:9px">
+
+    ${
+     completed
+     ?
+     `<div class="done">✓ QUEST COMPLETE</div>`
+     :
+     `<button onclick="startAriseQuest('${q.id}')">
+       START QUEST
+      </button>`
+    }
+
+   </div>
+  `;
+
+  container.appendChild(div);
+
+ });
+
+};
+
+/* ---------- QUEST START ---------- */
+
+window.startAriseQuest=function(id){
+
+ let q;
+
+ if(id==="special")q=specialQuest();
+ else q=defaultQuests.find(x=>x.id===id);
+
+ if(!q)return;
+
+ if(q.id==="special"&&specialQuestState===today()){
+  showToast("SPECIAL QUEST ALREADY COMPLETE");
+  return;
+ }
+
+ if(energy<5){
+  showToast("NOT ENOUGH ENERGY");
+  return;
+ }
+
+ currentQuest=q;
+
+ runnerMode="quest";
+
+ currentExercise=0;
+ currentSet=1;
+
+ openRunner();
+ updateQuestRunner();
+
+};
+
+/* ---------- REPLACE QUEST FINISH ---------- */
+
+window.finishQuest=function(){
+
+ const q=currentQuest;
+
+ if(!q)return;
+
+ const difficulty=q.difficulty||"normal";
+
+ const xpReward=Math.round(q.xp*questMultiplier(q));
+
+ const coinReward=Math.round(q.coins*questCoinMultiplier(q));
+
+ if(q.id==="special"){
+
+  specialQuestState=today();
+
+  localStorage.setItem(
+   "ariseSpecialQuestDate",
+   specialQuestState
+  );
+
+ }else{
+
+  questState[q.id]=true;
+
+ }
+
+ completedQuests++;
+
+ if(q.stat==="strength")strength+=q.statGain;
+ if(q.stat==="stamina")stamina+=q.statGain;
+ if(q.stat==="discipline")discipline+=q.statGain;
+
+ energy=Math.max(0,energy-5);
+ hp=Math.min(100,hp+5);
+
+ gainXP(xpReward);
+ gainCoins(coinReward);
+
+ updateStreak();
+
+ checkAchievements();
+
+ checkRankProgression();
+
+ save();
+
+ updateUI();
+
+ showBattleResult(
+  "QUEST CLEAR",
+  "+"+xpReward+" XP · +"+coinReward+" COINS"
+ );
+
+ setTimeout(()=>{
+
+  closeRunner();
+
+  showToast(
+   "⚔ "+difficulty.toUpperCase()+" QUEST COMPLETE"
+  );
+
+ },900);
+
+};
+
+/* ---------- RANK-AWARE XP ---------- */
+
+const originalGainXP=gainXP;
+
+window.gainXP=function(amount){
+
+ originalGainXP(amount);
+
+ checkRankProgression();
+
+ renderSkillTree();
+
+};
+
+/* ---------- TRAINING SKILL BONUSES ---------- */
+
+const originalFinishTraining=finishTraining;
+
+window.finishTraining=function(){
+
+ if(!currentMuscle)return;
+
+ let m=currentMuscle;
+
+ let bonusXP=m.rewardXP;
+
+ let bonusStrength=m.strength;
+
+ if(hasSkill("warrior")){
+  bonusXP=Math.round(bonusXP*1.10);
+ }
+
+ if(hasSkill("power")){
+  bonusStrength=Math.round(bonusStrength*1.05);
+ }
+
+ let energyCost=m.energy;
+
+ if(hasSkill("stamina")){
+  energyCost=Math.max(1,Math.round(energyCost*.95));
+ }
+
+ energy=Math.max(0,energy-energyCost);
+
+ hp=Math.max(
+  1,
+  hp-Math.min(
+   10,
+   energyCost/2
+  )
+ );
+
+ strength+=bonusStrength;
+ discipline+=m.discipline;
+
+ workouts++;
+
+ gainXP(bonusXP);
+
+ gainCoins(m.coins);
+
+ checkAchievements();
+ checkRankProgression();
+
+ save();
+ updateUI();
+
+ showBattleResult(
+  "TRAINING CLEAR",
+  "+"+bonusXP+" XP · +"+m.coins+" COINS"
+ );
+
+ setTimeout(()=>{
+
+  closeRunner();
+
+  showToast("⚔ TRAINING COMPLETE");
+
+ },1000);
+
+};
+
+/* ---------- SKILL COMBAT POWER ---------- */
+
+const originalGetPower=getPower;
+
+window.getPower=function(){
+
+ let power=originalGetPower();
+
+ if(hasSkill("awakening"))power+=10;
+
+ return power;
+
+};
+
+/* ---------- RECOVERY SKILL ---------- */
+
+const originalRecover=recoverPlayer;
+
+window.recoverPlayer=function(){
+
+ hp=100;
+
+ energy=100;
+
+ if(hasSkill("recovery")){
+  hp=100;
+  energy=100;
+ }
+
+ save();
+ updateUI();
+
+ showToast(
+  hasSkill("recovery")
+  ?"RAPID RECOVERY COMPLETE"
+  :"RECOVERY COMPLETE"
+ );
+
+};
+
+/* ---------- LEVEL-UP SKILL POINT ---------- */
+
+const oldShowLevelUp=showLevelUp;
+
+window.showLevelUp=function(oldLevel,newLevel){
+
+ oldShowLevelUp(oldLevel,newLevel);
+
+ const gained=newLevel-oldLevel;
+
+ if(gained>0){
+
+  skillPoints+=gained;
+
+  saveMegaData();
+
+  showToast("✦ +"+gained+" SKILL POINT");
+
+ }
+
+ checkRankProgression();
+
+};
+
+/* ---------- PROFILE ADDITION ---------- */
+
+function addRankPanel(){
+
+ const profile=document.getElementById("profilePage");
+
+ if(!profile||document.getElementById("rankPanel"))return;
+
+ const panel=document.createElement("div");
+
+ panel.id="rankPanel";
+
+ panel.className="card";
+
+ panel.innerHTML=`
+
+  <div class="label">RANK PROGRESSION</div>
+
+  <div style="
+   display:grid;
+   grid-template-columns:repeat(6,1fr);
+   gap:4px;
+   margin-top:12px
+  ">
+
+   ${["E","D","C","B","A","S"].map(r=>`
+
+    <div style="
+     text-align:center;
+     padding:8px 2px;
+     border:1px solid ${getRank().startsWith(r)?"var(--cyan)":"#263541"};
+     color:${getRank().startsWith(r)?"var(--cyan)":"#637584"};
+     font-size:9px;
+     font-weight:bold
+    ">
+     ${r}
+    </div>
+
+   `).join("")}
+
+  </div>
+
+  <div style="
+   margin-top:12px;
+   color:#718493;
+   font-size:9px;
+   line-height:1.7
+  ">
+
+   E → Level 1<br>
+   D → Level 3<br>
+   C → Level 7<br>
+   B → Level 12<br>
+   A → Level 20<br>
+   S → Level 30
+
+  </div>
+
+ `;
+
+ profile.appendChild(panel);
+
+}
+
+/* ---------- PROFILE SKILL BUTTON ---------- */
+
+function addSkillProfileButton(){
+
+ const profile=document.getElementById("profilePage");
+
+ if(!profile||document.getElementById("profileSkillButton"))return;
+
+ const card=document.createElement("div");
+
+ card.className="card";
+
+ card.id="profileSkillButton";
+
+ card.innerHTML=`
+
+  <div class="label">SKILL SYSTEM</div>
+
+  <div style="
+   display:flex;
+   justify-content:space-between;
+   align-items:center;
+   margin-top:10px
+  ">
+
+   <div>
+
+    <div style="
+     font-size:22px;
+     font-weight:900
+    ">
+     ✦ ${skillPoints}
+    </div>
+
+    <div style="
+     color:#718493;
+     font-size:9px;
+     margin-top:4px
+    ">
+     AVAILABLE SKILL POINTS
+    </div>
+
+   </div>
+
+   <button onclick="openSkillPage()">
+    OPEN SKILL TREE
+   </button>
+
+  </div>
+
+ `;
+
+ profile.appendChild(card);
+
+}
+
+window.openSkillPage=function(){
+
+ const nav=document.getElementById("skillNav");
+
+ if(nav){
+  showPage("skillPage",nav);
+ }
+
+ renderSkillTree();
+
+};
+
+/* ---------- UPDATE HOOK ---------- */
+
+const originalUpdateUI=updateUI;
+
+window.updateUI=function(){
+
+ originalUpdateUI();
+
+ checkRankProgression();
+
+ addRankPanel();
+
+ addSkillProfileButton();
+
+ renderSkillTree();
+
+ const point=document.getElementById("skillPointDisplay");
+
+ if(point)point.textContent=skillPoints;
+
+};
+
+/* ---------- START MEGA SYSTEM ---------- */
+
+createSkillPage();
+createSkillNav();
+addRankPanel();
+addSkillProfileButton();
+saveMegaData();
+
+setTimeout(()=>{
+
+ checkRankProgression();
+ updateUI();
+
+},100);
+
+})();
+</script>
+<script>
+/* =====================================================
+   ARISE INVENTORY + EQUIPMENT SYSTEM
+===================================================== */
+
+(function(){
+
+let ariseInventory=JSON.parse(
+ localStorage.getItem("ariseInventory")||"[]"
+);
+
+let ariseEquipment=JSON.parse(
+ localStorage.getItem("ariseEquipment")||"{}"
+);
+
+let inventoryTab="weapons";
+
+const equipmentData={
+
+ weapons:[
+  {
+   id:"iron_blade",
+   name:"IRON BLADE",
+   icon:"⚔️",
+   price:500,
+   power:5,
+   desc:"+5 Combat Power"
+  },
+  {
+   id:"steel_blade",
+   name:"STEEL BLADE",
+   icon:"🗡️",
+   price:2500,
+   power:15,
+   desc:"+15 Combat Power"
+  },
+  {
+   id:"shadow_blade",
+   name:"SHADOW BLADE",
+   icon:"🌑",
+   price:10000,
+   power:35,
+   desc:"+35 Combat Power"
+  },
+  {
+   id:"awakened_blade",
+   name:"AWAKENED BLADE",
+   icon:"☄️",
+   price:50000,
+   power:75,
+   desc:"+75 Combat Power"
+  }
+ ],
+
+ armor:[
+  {
+   id:"training_armor",
+   name:"TRAINING ARMOR",
+   icon:"🥋",
+   price:500,
+   power:5,
+   desc:"+5 Combat Power"
+  },
+  {
+   id:"steel_armor",
+   name:"STEEL ARMOR",
+   icon:"🛡️",
+   price:2500,
+   power:15,
+   desc:"+15 Combat Power"
+  },
+  {
+   id:"shadow_armor",
+   name:"SHADOW ARMOR",
+   icon:"🖤",
+   price:10000,
+   power:35,
+   desc:"+35 Combat Power"
+  },
+  {
+   id:"awakened_armor",
+   name:"AWAKENED ARMOR",
+   icon:"👑",
+   price:50000,
+   power:75,
+   desc:"+75 Combat Power"
+  }
+ ],
+
+ accessories:[
+  {
+   id:"iron_ring",
+   name:"IRON RING",
+   icon:"💍",
+   price:1000,
+   power:8,
+   desc:"+8 Combat Power"
+  },
+  {
+   id:"warrior_ring",
+   name:"WARRIOR RING",
+   icon:"💠",
+   price:5000,
+   power:20,
+   desc:"+20 Combat Power"
+  },
+  {
+   id:"shadow_ring",
+   name:"SHADOW RING",
+   icon:"🔮",
+   price:20000,
+   power:45,
+   desc:"+45 Combat Power"
+  },
+  {
+   id:"awakening_core",
+   name:"AWAKENING CORE",
+   icon:"✦",
+   price:100000,
+   power:100,
+   desc:"+100 Combat Power"
+  }
+ ]
+
+};
+
+function saveEquipment(){
+
+ localStorage.setItem(
+  "ariseInventory",
+  JSON.stringify(ariseInventory)
+ );
+
+ localStorage.setItem(
+  "ariseEquipment",
+  JSON.stringify(ariseEquipment)
+ );
+
+}
+
+function equipmentOwned(id){
+
+ return ariseInventory.includes(id);
+
+}
+
+function equippedItem(slot){
+
+ return ariseEquipment[slot]||"";
+
+}
+
+function equipmentPower(){
+
+ let total=0;
+
+ Object.keys(ariseEquipment).forEach(slot=>{
+
+  const id=ariseEquipment[slot];
+
+  if(!id)return;
+
+  const all=[
+   ...equipmentData.weapons,
+   ...equipmentData.armor,
+   ...equipmentData.accessories
+  ];
+
+  const item=all.find(x=>x.id===id);
+
+  if(item)total+=item.power;
+
+ });
+
+ return total;
+
+}
+
+/* ---------- INVENTORY PAGE ---------- */
+
+function createInventoryPage(){
+
+ if(document.getElementById("inventoryPage"))return;
+
+ const page=document.createElement("section");
+
+ page.id="inventoryPage";
+ page.className="page";
+
+ page.innerHTML=`
+
+ <div class="system-title">
+  INVENTORY SYSTEM
+ </div>
+
+ <div class="card">
+
+  <div class="label">
+   EQUIPMENT POWER
+  </div>
+
+  <div style="
+   font-size:35px;
+   font-weight:900;
+   color:var(--cyan);
+   margin-top:6px
+  ">
+
+   +<span id="equipmentPower">0</span>
+
+  </div>
+
+  <div style="
+   color:#718493;
+   font-size:9px;
+   margin-top:5px
+  ">
+
+   ADDITIONAL COMBAT POWER
+
+  </div>
+
+ </div>
+
+ <div class="shop-tabs">
+
+  <button
+   class="shop-tab active"
+   onclick="setInventoryTab('weapons',this)">
+   ⚔ WEAPONS
+  </button>
+
+  <button
+   class="shop-tab"
+   onclick="setInventoryTab('armor',this)">
+   🛡 ARMOR
+  </button>
+
+  <button
+   class="shop-tab"
+   onclick="setInventoryTab('accessories',this)">
+   💍 ACCESSORIES
+  </button>
+
+ </div>
+
+ <div id="inventoryList"></div>
+
+ `;
+
+ document.getElementById("content").appendChild(page);
+
+ renderInventory();
+
+}
+
+function setInventoryTab(tab,button){
+
+ inventoryTab=tab;
+
+ document
+  .querySelectorAll("#inventoryPage .shop-tab")
+  .forEach(x=>x.classList.remove("active"));
+
+ button.classList.add("active");
+
+ renderInventory();
+
+}
+
+function renderInventory(){
+
+ const list=document.getElementById("inventoryList");
+
+ if(!list)return;
+
+ list.innerHTML="";
+
+ const items=equipmentData[inventoryTab];
+
+ items.forEach(item=>{
+
+  const owned=equipmentOwned(item.id);
+
+  const equipped=
+   equippedItem(inventoryTab)===item.id;
+
+  const div=document.createElement("div");
+
+  div.className=
+   "shop-item "+
+   (owned?"owned ":"")+
+   (equipped?"equipped":"");
+
+  let action="";
+
+  if(equipped){
+
+   action=`
+    <button
+     class="secondary"
+     disabled>
+     ✓ EQUIPPED
+    </button>
+   `;
+
+  }else if(owned){
+
+   action=`
+    <button
+     class="secondary"
+     onclick="equipEquipment('${inventoryTab}','${item.id}')">
+     EQUIP
+    </button>
+   `;
+
+  }else{
+
+   action=`
+    <button
+     onclick="buyEquipment('${inventoryTab}','${item.id}')"
+     ${coins<item.price?"disabled":""}>
+     BUY
+    </button>
+   `;
+
+  }
+
+  div.innerHTML=`
+
+   <div class="shop-item-top">
+
+    <div class="shop-icon">
+     ${item.icon}
+    </div>
+
+    <div>
+
+     <h3>${item.name}</h3>
+
+     <p>
+      ${item.desc}
+     </p>
+
+    </div>
+
+   </div>
+
+   <div class="price">
+
+    <span>
+     🪙 ${item.price.toLocaleString()}
+    </span>
+
+    ${action}
+
+   </div>
+
+  `;
+
+  list.appendChild(div);
+
+ });
+
+ const power=document.getElementById("equipmentPower");
+
+ if(power)
+  power.textContent=equipmentPower();
+
+}
+
+/* ---------- BUY ---------- */
+
+window.buyEquipment=function(slot,id){
+
+ const item=equipmentData[slot]
+  .find(x=>x.id===id);
+
+ if(!item)return;
+
+ if(equipmentOwned(id)){
+
+  equipEquipment(slot,id);
+
+  return;
+
+ }
+
+ if(coins<item.price){
+
+  showToast("NOT ENOUGH COINS");
+
+  return;
+
+ }
+
+ coins-=item.price;
+
+ ariseInventory.push(id);
+
+ saveEquipment();
+
+ save();
+
+ renderInventory();
+
+ updateUI();
+
+ showToast(
+  "ACQUIRED: "+item.name
+ );
+
+};
+
+/* ---------- EQUIP ---------- */
+
+window.equipEquipment=function(slot,id){
+
+ if(!equipmentOwned(id)){
+
+  showToast("ITEM NOT OWNED");
+
+  return;
+
+ }
+
+ ariseEquipment[slot]=id;
+
+ saveEquipment();
+
+ renderInventory();
+
+ updateUI();
+
+ showToast(
+  "EQUIPPED: "+id.replaceAll("_"," ").toUpperCase()
+ );
+
+};
+
+/* ---------- COMBAT POWER ---------- */
+
+const oldPowerFunction=getPower;
+
+window.getPower=function(){
+
+ let power=oldPowerFunction();
+
+ power+=equipmentPower();
+
+ return power;
+
+};
+
+/* ---------- EQUIPMENT PROFILE ---------- */
+
+function createEquipmentProfile(){
+
+ const profile=document.getElementById("profilePage");
+
+ if(!profile||
+    document.getElementById("equipmentProfileCard"))
+  return;
+
+ const card=document.createElement("div");
+
+ card.id="equipmentProfileCard";
+
+ card.className="card";
+
+ card.innerHTML=`
+
+ <div class="label">
+  EQUIPPED
+ </div>
+
+ <div style="
+  display:grid;
+  gap:9px;
+  margin-top:12px
+ ">
+
+  <div class="info">
+   <strong id="profileWeapon">NONE</strong>
+   <span>WEAPON</span>
+  </div>
+
+  <div class="info">
+   <strong id="profileArmor">NONE</strong>
+   <span>ARMOR</span>
+  </div>
+
+  <div class="info">
+   <strong id="profileAccessory">NONE</strong>
+   <span>ACCESSORY</span>
+  </div>
+
+ </div>
+
+ <button
+  onclick="openInventoryPage()"
+  style="width:100%;margin-top:12px">
+
+  OPEN INVENTORY
+
+ </button>
+
+ `;
+
+ profile.appendChild(card);
+
+}
+
+function updateEquipmentProfile(){
+
+ const weapon=document.getElementById("profileWeapon");
+ const armor=document.getElementById("profileArmor");
+ const accessory=document.getElementById("profileAccessory");
+
+ const all=[
+  ...equipmentData.weapons,
+  ...equipmentData.armor,
+  ...equipmentData.accessories
+ ];
+
+ if(weapon){
+
+  const item=all.find(
+   x=>x.id===ariseEquipment.weapons
+  );
+
+  weapon.textContent=
+   item?item.name:"NONE";
+
+ }
+
+ if(armor){
+
+  const item=all.find(
+   x=>x.id===ariseEquipment.armor
+  );
+
+  armor.textContent=
+   item?item.name:"NONE";
+
+ }
+
+ if(accessory){
+
+  const item=all.find(
+   x=>x.id===ariseEquipment.accessories
+  );
+
+  accessory.textContent=
+   item?item.name:"NONE";
+
+ }
+
+}
+
+window.openInventoryPage=function(){
+
+ const nav=document.getElementById("inventoryNav");
+
+ if(nav){
+
+  showPage(
+   "inventoryPage",
+   nav
+  );
+
+ }
+
+ renderInventory();
+
+};
+
+/* ---------- NAV BUTTON ---------- */
+
+function createInventoryNav(){
+
+ const nav=document.getElementById("bottom-nav");
+
+ if(!nav)return;
+
+ if(document.getElementById("inventoryNav"))
+  return;
+
+ const button=document.createElement("button");
+
+ button.id="inventoryNav";
+
+ button.className="nav-btn";
+
+ button.innerHTML=`
+
+  <span class="nav-icon">
+   🎒
+  </span>
+  BAG
+
+ `;
+
+ button.onclick=function(){
+
+  showPage(
+   "inventoryPage",
+   button
+  );
+
+  renderInventory();
+
+ };
+
+ nav.appendChild(button);
+
+}
+
+/* ---------- PROFILE UPDATE ---------- */
+
+const oldUpdateUI=updateUI;
+
+window.updateUI=function(){
+
+ oldUpdateUI();
+
+ createEquipmentProfile();
+
+ updateEquipmentProfile();
+
+ const power=document.getElementById("powerText");
+
+ if(power)
+  power.textContent=getPower();
+
+ const statsPower=
+  document.getElementById("statsPower");
+
+ if(statsPower)
+  statsPower.textContent=getPower();
+
+ const profilePower=
+  document.getElementById("profilePower");
+
+ if(profilePower)
+  profilePower.textContent=getPower();
+
+ const equipment=
+  document.getElementById("equipmentPower");
+
+ if(equipment)
+  equipment.textContent=equipmentPower();
+
+ renderInventory();
+
+};
+
+/* ---------- START ---------- */
+
+createInventoryPage();
+createInventoryNav();
+createEquipmentProfile();
+saveEquipment();
+
+setTimeout(()=>{
+
+ updateEquipmentProfile();
+ updateUI();
+
+},150);
+
+})();
+</script>
+<!-- ============================= -->
+<!-- ARISE BOSS BATTLE SYSTEM -->
+<!-- ============================= -->
+
+<script>
+(function(){
+
+/* ---------- BOSS DATA ---------- */
+
+const BOSS_DATA = [
+    {
+        id: 1,
+        name: "SHADOW WOLF",
+        title: "E-RANK BOSS",
+        hp: 500,
+        attack: 18,
+        defense: 5,
+        xp: 250,
+        coins: 1000
+    },
+    {
+        id: 2,
+        name: "IRON GOLEM",
+        title: "D-RANK BOSS",
+        hp: 1200,
+        attack: 30,
+        defense: 12,
+        xp: 500,
+        coins: 2500
+    },
+    {
+        id: 3,
+        name: "BLOOD ORC",
+        title: "C-RANK BOSS",
+        hp: 2500,
+        attack: 45,
+        defense: 20,
+        xp: 900,
+        coins: 5000
+    },
+    {
+        id: 4,
+        name: "SHADOW KNIGHT",
+        title: "B-RANK BOSS",
+        hp: 5000,
+        attack: 65,
+        defense: 30,
+        xp: 1500,
+        coins: 10000
+    },
+    {
+        id: 5,
+        name: "ABYSSAL KING",
+        title: "A-RANK BOSS",
+        hp: 10000,
+        attack: 100,
+        defense: 45,
+        xp: 3000,
+        coins: 25000
+    },
+    {
+        id: 6,
+        name: "MONARCH OF SHADOW",
+        title: "S-RANK BOSS",
+        hp: 25000,
+        attack: 150,
+        defense: 70,
+        xp: 7500,
+        coins: 100000
+    }
+];
+
+
+/* ---------- SAVED STATE ---------- */
+
+let bossUnlocked = Number(
+    localStorage.getItem("ariseBossUnlocked") || 1
+);
+
+let bossWins = Number(
+    localStorage.getItem("ariseBossWins") || 0
+);
+
+let currentBoss = null;
+let bossHP = 0;
+let playerBattleHP = 100;
+let battleActive = false;
+let bossTurn = false;
+
+
+/* ---------- SAVE ---------- */
+
+function saveBossData(){
+    localStorage.setItem("ariseBossUnlocked", bossUnlocked);
+    localStorage.setItem("ariseBossWins", bossWins);
+}
+
+
+/* ---------- EQUIPMENT POWER ---------- */
+
+function getBattlePower(){
+
+    let strength = Number(
+        localStorage.getItem("ariseStrength") || 0
+    );
+
+    let equipmentPower = 0;
+
+    try{
+        let equipment = JSON.parse(
+            localStorage.getItem("ariseEquipment") || "{}"
+        );
+
+        if(equipment.weapon){
+            equipmentPower += Number(equipment.weapon.power || 0);
+        }
+
+        if(equipment.armor){
+            equipmentPower += Number(equipment.armor.power || 0);
+        }
+
+        if(equipment.accessory){
+            equipmentPower += Number(equipment.accessory.power || 0);
+        }
+
+    }catch(e){}
+
+    return Math.max(10, strength + equipmentPower);
+}
+
+
+/* ---------- CREATE PAGE ---------- */
+
+function createBossPage(){
+
+    if(document.getElementById("bossPage")) return;
+
+    const page = document.createElement("section");
+
+    page.id = "bossPage";
+    page.className = "page";
+
+    page.innerHTML = `
+        <div class="hud-title">BOSS GATE</div>
+
+        <div class="boss-system-card">
+
+            <div class="boss-system-label">
+                SYSTEM NOTICE
+            </div>
+
+            <div class="boss-system-text">
+                DEFEAT THE ENEMY TO ADVANCE
+            </div>
+
+        </div>
+
+        <div id="bossList"></div>
+
+        <div id="bossArena" style="display:none;"></div>
+
+    `;
+
+    const content = document.getElementById("content");
+
+    if(content){
+        content.appendChild(page);
+    }
+
+    renderBossList();
+}
+
+
+/* ---------- BOSS LIST ---------- */
+
+function renderBossList(){
+
+    const box = document.getElementById("bossList");
+
+    if(!box) return;
+
+    box.innerHTML = "";
+
+    BOSS_DATA.forEach((boss,index)=>{
+
+        const unlocked = boss.id <= bossUnlocked;
+
+        const card = document.createElement("div");
+
+        card.className = "boss-card";
+
+        card.innerHTML = `
+
+            <div class="boss-rank">
+                ${boss.title}
+            </div>
+
+            <div class="boss-name">
+                ${unlocked ? boss.name : "??? LOCKED ???"}
+            </div>
+
+            <div class="boss-info">
+
+                ${unlocked
+                    ? `
+                    <span>HP ${boss.hp}</span>
+                    <span>ATK ${boss.attack}</span>
+                    <span>XP +${boss.xp}</span>
+                    `
+                    : `
+                    <span>DEFEAT PREVIOUS BOSS</span>
+                    `
+                }
+
+            </div>
+
+            <button
+                class="boss-button"
+                ${unlocked ? "" : "disabled"}
+                onclick="startBossBattle(${boss.id})"
+            >
+                ${unlocked ? "ENTER GATE" : "LOCKED"}
+            </button>
+
+        `;
+
+        box.appendChild(card);
+
+    });
+
+}
+
+
+/* ---------- START BATTLE ---------- */
+
+window.startBossBattle = function(id){
+
+    currentBoss = BOSS_DATA.find(b => b.id === id);
+
+    if(!currentBoss) return;
+
+    bossHP = currentBoss.hp;
+
+    playerBattleHP = Number(
+        localStorage.getItem("ariseHP") || 100
+    );
+
+    if(playerBattleHP <= 0){
+        playerBattleHP = 100;
+    }
+
+    battleActive = true;
+    bossTurn = false;
+
+    document.getElementById("bossList").style.display = "none";
+
+    renderArena();
+
+};
+
+
+/* ---------- ARENA ---------- */
+
+function renderArena(){
+
+    const arena = document.getElementById("bossArena");
+
+    if(!arena) return;
+
+    arena.style.display = "block";
+
+    arena.innerHTML = `
+
+        <div class="battle-header">
+
+            <button
+                class="back-battle"
+                onclick="exitBossBattle()"
+            >
+                ← EXIT
+            </button>
+
+            <div>
+                ${currentBoss.title}
+            </div>
+
+        </div>
+
+
+        <div class="enemy-zone">
+
+            <div class="enemy-icon">
+                ☠
+            </div>
+
+            <div class="enemy-name">
+                ${currentBoss.name}
+            </div>
+
+            <div class="enemy-hp-text" id="bossHPText">
+                ${bossHP} / ${currentBoss.hp} HP
+            </div>
+
+            <div class="bar">
+                <div
+                    id="bossHPBar"
+                    class="bar-fill enemy-fill"
+                    style="width:100%"
+                ></div>
+            </div>
+
+        </div>
+
+
+        <div class="battle-log" id="battleLog">
+            SYSTEM: BATTLE STARTED
+        </div>
+
+
+        <div class="player-zone">
+
+            <div class="player-name">
+                RISHAN
+            </div>
+
+            <div class="player-hp-text" id="playerHPText">
+                ${playerBattleHP} / 100 HP
+            </div>
+
+            <div class="bar">
+                <div
+                    id="playerHPBar"
+                    class="bar-fill player-fill"
+                    style="width:${playerBattleHP}%"
+                ></div>
+            </div>
+
+            <div class="battle-power">
+                ⚔ COMBAT POWER:
+                <strong>${getBattlePower()}</strong>
+            </div>
+
+        </div>
+
+
+        <div class="battle-actions">
+
+            <button
+                class="attack-button"
+                id="attackButton"
+                onclick="playerAttack()"
+            >
+                ⚔ ATTACK
+            </button>
+
+            <button
+                class="recover-button"
+                onclick="battleRecover()"
+            >
+                ⚡ RECOVER
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ---------- PLAYER ATTACK ---------- */
+
+window.playerAttack = function(){
+
+    if(!battleActive || bossTurn) return;
+
+    const energy = Number(
+        localStorage.getItem("ariseEnergy") || 100
+    );
+
+    if(energy < 5){
+
+        battleMessage(
+            "SYSTEM: NOT ENOUGH ENERGY"
+        );
+
+        return;
+    }
+
+    localStorage.setItem(
+        "ariseEnergy",
+        Math.max(0,energy - 5)
+    );
+
+
+    const power = getBattlePower();
+
+    let damage =
+        Math.floor(
+            power * (1 + Math.random() * 0.45)
+        );
+
+    damage = Math.max(
+        10,
+        damage - currentBoss.defense
+    );
+
+
+    /* CRITICAL HIT */
+
+    const critical =
+        Math.random() < 0.15;
+
+    if(critical){
+        damage *= 2;
+    }
+
+
+    bossHP = Math.max(
+        0,
+        bossHP - damage
+    );
+
+
+    battleMessage(
+        critical
+        ? `CRITICAL HIT! -${damage} DAMAGE`
+        : `YOU ATTACKED -${damage} DAMAGE`
+    );
+
+
+    updateBattleUI();
+
+
+    if(bossHP <= 0){
+
+        setTimeout(
+            bossVictory,
+            500
+        );
+
+        return;
+    }
+
+
+    bossTurn = true;
+
+    setTimeout(
+        bossAttack,
+        900
+    );
+
+};
+
+
+/* ---------- BOSS ATTACK ---------- */
+
+function bossAttack(){
+
+    if(!battleActive) return;
+
+
+    let damage =
+        Math.floor(
+            currentBoss.attack *
+            (0.75 + Math.random() * 0.5)
+        );
+
+
+    /* DEFENSE FROM ARMOR */
+
+    try{
+
+        const equipment = JSON.parse(
+            localStorage.getItem("ariseEquipment") || "{}"
+        );
+
+        if(equipment.armor){
+
+            damage -= Math.floor(
+                Number(equipment.armor.power || 0) * 0.2
+            );
+
+        }
+
+    }catch(e){}
+
+
+    damage = Math.max(
+        5,
+        damage
+    );
+
+
+    playerBattleHP = Math.max(
+        0,
+        playerBattleHP - damage
+    );
+
+
+    localStorage.setItem(
+        "ariseHP",
+        playerBattleHP
+    );
+
+
+    battleMessage(
+        `${currentBoss.name} ATTACKS -${damage} HP`
+    );
+
+
+    updateBattleUI();
+
+
+    if(playerBattleHP <= 0){
+
+        setTimeout(
+            battleDefeat,
+            500
+        );
+
+        return;
+    }
+
+
+    bossTurn = false;
+
+}
+
+
+/* ---------- RECOVER ---------- */
+
+window.battleRecover = function(){
+
+    if(!battleActive || bossTurn) return;
+
+    const energy = Number(
+        localStorage.getItem("ariseEnergy") || 100
+    );
+
+    if(energy < 15){
+
+        battleMessage(
+            "SYSTEM: NOT ENOUGH ENERGY"
+        );
+
+        return;
+    }
+
+
+    localStorage.setItem(
+        "ariseEnergy",
+        energy - 15
+    );
+
+
+    const heal =
+        15 + Math.floor(Math.random() * 11);
+
+
+    playerBattleHP = Math.min(
+        100,
+        playerBattleHP + heal
+    );
+
+
+    localStorage.setItem(
+        "ariseHP",
+        playerBattleHP
+    );
+
+
+    battleMessage(
+        `RECOVERY +${heal} HP`
+    );
+
+
+    updateBattleUI();
+
+    bossTurn = true;
+
+    setTimeout(
+        bossAttack,
+        900
+    );
+
+};
+
+
+/* ---------- UPDATE ARENA ---------- */
+
+function updateBattleUI(){
+
+    const bossText =
+        document.getElementById("bossHPText");
+
+    const bossBar =
+        document.getElementById("bossHPBar");
+
+    const playerText =
+        document.getElementById("playerHPText");
+
+    const playerBar =
+        document.getElementById("playerHPBar");
+
+
+    if(bossText){
+
+        bossText.textContent =
+            `${bossHP} / ${currentBoss.hp} HP`;
+
+    }
+
+
+    if(bossBar){
+
+        bossBar.style.width =
+            `${(bossHP/currentBoss.hp)*100}%`;
+
+    }
+
+
+    if(playerText){
+
+        playerText.textContent =
+            `${playerBattleHP} / 100 HP`;
+
+    }
+
+
+    if(playerBar){
+
+        playerBar.style.width =
+            `${playerBattleHP}%`;
+
+    }
+
+}
+
+
+/* ---------- BATTLE LOG ---------- */
+
+function battleMessage(message){
+
+    const log =
+        document.getElementById("battleLog");
+
+    if(!log) return;
+
+    log.innerHTML =
+        `SYSTEM: ${message}`;
+
+}
+
+
+/* ---------- VICTORY ---------- */
+
+function bossVictory(){
+
+    battleActive = false;
+
+    const xpReward =
+        currentBoss.xp;
+
+    const coinReward =
+        currentBoss.coins;
+
+
+    /* XP */
+
+    let xp = Number(
+        localStorage.getItem("ariseXP") || 0
+    );
+
+    let level = Number(
+        localStorage.getItem("ariseLevel") || 1
+    );
+
+
+    xp += xpReward;
+
+
+    /* LEVEL LOOP */
+
+    function requiredXP(){
+
+        return 100 + ((level - 1) * 50);
+
+    }
+
+
+    let levelsGained = 0;
+
+
+    while(xp >= requiredXP()){
+
+        xp -= requiredXP();
+
+        level++;
+
+        levelsGained++;
+
+        let strength = Number(
+            localStorage.getItem("ariseStrength") || 0
+        );
+
+        let stamina = Number(
+            localStorage.getItem("ariseStamina") || 0
+        );
+
+        let discipline = Number(
+            localStorage.getItem("ariseDiscipline") || 0
+        );
+
+
+        localStorage.setItem(
+            "ariseStrength",
+            strength + 5
+        );
+
+        localStorage.setItem(
+            "ariseStamina",
+            stamina + 3
+        );
+
+        localStorage.setItem(
+            "ariseDiscipline",
+            discipline + 2
+        );
+
+    }
+
+
+    localStorage.setItem(
+        "ariseXP",
+        xp
+    );
+
+    localStorage.setItem(
+        "ariseLevel",
+        level
+    );
+
+
+    /* COINS */
+
+    let coins = Number(
+        localStorage.getItem("ariseCoins") || 0
+    );
+
+    coins += coinReward;
+
+    localStorage.setItem(
+        "ariseCoins",
+        coins
+    );
+
+
+    /* WINS */
+
+    bossWins++;
+
+
+    /* UNLOCK NEXT */
+
+    if(
+        currentBoss.id === bossUnlocked &&
+        bossUnlocked < BOSS_DATA.length
+    ){
+
+        bossUnlocked++;
+
+    }
+
+
+    saveBossData();
+
+
+    showBattleResult(
+        true,
+        xpReward,
+        coinReward,
+        levelsGained
+    );
+
+}
+
+
+/* ---------- DEFEAT ---------- */
+
+function battleDefeat(){
+
+    battleActive = false;
+
+    playerBattleHP = 1;
+
+    localStorage.setItem(
+        "ariseHP",
+        1
+    );
+
+
+    showBattleResult(
+        false,
+        0,
+        0,
+        0
+    );
+
+}
+
+
+/* ---------- RESULT ---------- */
+
+function showBattleResult(
+    victory,
+    xp,
+    coins,
+    levels
+){
+
+    const arena =
+        document.getElementById("bossArena");
+
+    if(!arena) return;
+
+
+    arena.innerHTML = `
+
+        <div class="battle-result">
+
+            <div class="result-symbol">
+                ${victory ? "✦" : "☠"}
+            </div>
+
+            <div class="result-title">
+                ${victory ? "VICTORY" : "DEFEATED"}
+            </div>
+
+            <div class="result-boss">
+                ${currentBoss.name}
+            </div>
+
+
+            ${
+                victory
+                ?
+                `
+                <div class="reward-box">
+
+                    <div>+${xp} XP</div>
+
+                    <div>+${coins.toLocaleString()} COINS</div>
+
+                    ${
+                        levels > 0
+                        ? `<div>LEVEL UP ×${levels}</div>`
+                        : ""
+                    }
+
+                </div>
+                `
+                :
+                `
+                <div class="reward-box">
+                    RECOVER YOUR HP
+                    BEFORE ENTERING AGAIN
+                </div>
+                `
+            }
+
+
+            <button
+                class="boss-button"
+                onclick="exitBossBattle()"
+            >
+                CONTINUE
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ---------- EXIT ---------- */
+
+window.exitBossBattle = function(){
+
+    battleActive = false;
+
+    const arena =
+        document.getElementById("bossArena");
+
+    const list =
+        document.getElementById("bossList");
+
+
+    if(arena){
+
+        arena.style.display = "none";
+
+    }
+
+
+    if(list){
+
+        list.style.display = "block";
+
+    }
+
+
+    renderBossList();
+
+
+    /* UPDATE EXISTING APP UI */
+
+    try{
+
+        if(typeof updateUI === "function"){
+            updateUI();
+        }
+
+    }catch(e){}
+
+};
+
+
+/* ---------- NAV ---------- */
+
+function createBossNav(){
+
+    const nav =
+        document.getElementById("bottom-nav");
+
+    if(!nav) return;
+
+
+    if(document.getElementById("bossNav")){
+        return;
+    }
+
+
+    const button =
+        document.createElement("button");
+
+    button.id = "bossNav";
+
+    button.innerHTML =
+        "☠<span>BOSS</span>";
+
+
+    button.onclick = function(){
+
+        document
+            .querySelectorAll(".page")
+            .forEach(p =>
+                p.classList.remove("active")
+            );
+
+
+        const page =
+            document.getElementById("bossPage");
+
+        if(page){
+            page.classList.add("active");
+        }
+
+
+        nav
+            .querySelectorAll("button")
+            .forEach(b =>
+                b.classList.remove("active")
+            );
+
+
+        button.classList.add("active");
+
+    };
+
+
+    nav.appendChild(button);
+
+}
+
+
+/* ---------- CSS ---------- */
+
+function addBossCSS(){
+
+    if(document.getElementById("bossCSS"))
+        return;
+
+
+    const style =
+        document.createElement("style");
+
+    style.id = "bossCSS";
+
+
+    style.textContent = `
+
+    .boss-system-card{
+        border:1px solid rgba(120,180,255,.3);
+        background:rgba(10,20,40,.75);
+        padding:15px;
+        margin-bottom:15px;
+        text-align:center;
+        box-shadow:0 0 20px rgba(0,100,255,.08);
+    }
+
+    .boss-system-label{
+        font-size:10px;
+        letter-spacing:3px;
+        opacity:.6;
+        margin-bottom:7px;
+    }
+
+    .boss-system-text{
+        font-size:12px;
+        letter-spacing:1px;
+    }
+
+    .boss-card{
+        border:1px solid rgba(120,180,255,.22);
+        background:linear-gradient(
+            145deg,
+            rgba(15,25,45,.95),
+            rgba(5,8,18,.98)
+        );
+        padding:16px;
+        margin:12px 0;
+        position:relative;
+        overflow:hidden;
+    }
+
+    .boss-card:before{
+        content:"";
+        position:absolute;
+        left:0;
+        top:0;
+        width:3px;
+        height:100%;
+        background:#4da3ff;
+    }
+
+    .boss-rank{
+        font-size:10px;
+        letter-spacing:3px;
+        opacity:.65;
+        margin-bottom:7px;
+    }
+
+    .boss-name{
+        font-size:20px;
+        font-weight:bold;
+        letter-spacing:2px;
+        margin-bottom:12px;
+    }
+
+    .boss-info{
+        display:flex;
+        justify-content:space-between;
+        gap:6px;
+        font-size:10px;
+        opacity:.7;
+        margin-bottom:14px;
+    }
+
+    .boss-button{
+        width:100%;
+        padding:13px;
+        border:1px solid rgba(100,180,255,.5);
+        background:rgba(30,100,180,.15);
+        color:#fff;
+        font-weight:bold;
+        letter-spacing:2px;
+        cursor:pointer;
+    }
+
+    .boss-button:active{
+        transform:scale(.98);
+    }
+
+    .boss-button:disabled{
+        opacity:.3;
+        cursor:not-allowed;
+    }
+
+    .battle-header{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        font-size:12px;
+        letter-spacing:2px;
+        margin-bottom:18px;
+    }
+
+    .back-battle{
+        border:0;
+        background:none;
+        color:#fff;
+        padding:5px;
+    }
+
+    .enemy-zone{
+        text-align:center;
+        padding:22px 10px;
+        border:1px solid rgba(255,60,80,.3);
+        background:rgba(50,5,15,.35);
+    }
+
+    .enemy-icon{
+        font-size:65px;
+        margin-bottom:5px;
+        text-shadow:0 0 25px rgba(255,50,70,.6);
+    }
+
+    .enemy-name{
+        font-size:20px;
+        font-weight:bold;
+        letter-spacing:3px;
+    }
+
+    .enemy-hp-text,
+    .player-hp-text{
+        font-size:11px;
+        margin:10px 0 6px;
+        opacity:.8;
+    }
+
+    .bar{
+        height:8px;
+        background:rgba(255,255,255,.08);
+        overflow:hidden;
+    }
+
+    .bar-fill{
+        height:100%;
+        transition:width .35s ease;
+    }
+
+    .enemy-fill{
+        background:#ff4055;
+        box-shadow:0 0 12px #ff4055;
+    }
+
+    .player-fill{
+        background:#4da3ff;
+        box-shadow:0 0 12px #4da3ff;
+    }
+
+    .battle-log{
+        margin:15px 0;
+        padding:10px;
+        background:rgba(255,255,255,.04);
+        border-left:2px solid #4da3ff;
+        font-size:10px;
+        letter-spacing:1px;
+        min-height:18px;
+    }
+
+    .player-zone{
+        border:1px solid rgba(80,150,255,.25);
+        padding:15px;
+        background:rgba(10,20,40,.5);
+    }
+
+    .player-name{
+        font-weight:bold;
+        letter-spacing:2px;
+    }
+
+    .battle-power{
+        margin-top:12px;
+        font-size:11px;
+        opacity:.8;
+    }
+
+    .battle-actions{
+        display:grid;
+        grid-template-columns:2fr 1fr;
+        gap:10px;
+        margin-top:15px;
+    }
+
+    .attack-button,
+    .recover-button{
+        padding:16px;
+        border:1px solid rgba(255,255,255,.2);
+        color:#fff;
+        font-weight:bold;
+        letter-spacing:2px;
+        background:rgba(255,255,255,.06);
+    }
+
+    .attack-button{
+        background:rgba(180,30,45,.3);
+        border-color:rgba(255,70,90,.5);
+    }
+
+    .recover-button{
+        background:rgba(30,100,180,.2);
+    }
+
+    .battle-result{
+        text-align:center;
+        padding:35px 15px;
+        border:1px solid rgba(100,180,255,.3);
+        background:rgba(10,15,30,.9);
+    }
+
+    .result-symbol{
+        font-size:60px;
+        margin-bottom:10px;
+    }
+
+    .result-title{
+        font-size:28px;
+        font-weight:bold;
+        letter-spacing:5px;
+    }
+
+    .result-boss{
+        margin:10px 0 25px;
+        opacity:.65;
+        letter-spacing:2px;
+    }
+
+    .reward-box{
+        border:1px solid rgba(255,255,255,.15);
+        padding:15px;
+        margin-bottom:20px;
+        line-height:2;
+        font-size:13px;
+    }
+
+    `;
+
+    document.head.appendChild(style);
+
+}
+
+
+/* ---------- INITIALIZE ---------- */
+
+function initBossSystem(){
+
+    addBossCSS();
+
+    createBossPage();
+
+    createBossNav();
+
+}
+
+
+if(document.readyState === "loading"){
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initBossSystem
+    );
+
+}else{
+
+    initBossSystem();
+
+}
+
+})();
+</script>
+  <script>
+(function(){
+
+/* =========================================================
+   ARISE — AWAKENING COMBAT SKILLS
+   ========================================================= */
+
+const COMBAT_SKILLS = [
+    {
+        id:"power_strike",
+        name:"POWER STRIKE",
+        icon:"⚔",
+        damage:1.8,
+        energy:12,
+        cooldown:0,
+        description:"A heavy physical strike."
+    },
+    {
+        id:"shadow_slash",
+        name:"SHADOW SLASH",
+        icon:"🗡",
+        damage:2.5,
+        energy:20,
+        cooldown:8,
+        description:"A fast shadow-infused attack."
+    },
+    {
+        id:"critical_burst",
+        name:"CRITICAL BURST",
+        icon:"✦",
+        damage:4,
+        energy:35,
+        cooldown:15,
+        description:"A devastating critical attack."
+    },
+    {
+        id:"awakening",
+        name:"AWAKENING",
+        icon:"☄",
+        damage:7,
+        energy:60,
+        cooldown:30,
+        description:"Release overwhelming power."
+    }
+];
+
+let skillCooldowns =
+    JSON.parse(
+        localStorage.getItem("ariseSkillCooldowns") || "{}"
+    );
+
+let skillTimers = {};
+
+function saveSkillCooldowns(){
+
+    localStorage.setItem(
+        "ariseSkillCooldowns",
+        JSON.stringify(skillCooldowns)
+    );
+
+}
+
+
+/* =========================================================
+   SKILL PAGE
+   ========================================================= */
+
+function createCombatSkillPage(){
+
+    if(document.getElementById("combatSkillPage"))
+        return;
+
+    const page =
+        document.createElement("section");
+
+    page.id = "combatSkillPage";
+    page.className = "page";
+
+    page.innerHTML = `
+
+        <div class="hud-title">
+            AWAKENING
+        </div>
+
+        <div class="awakening-header">
+
+            <div class="awakening-symbol">
+                ✦
+            </div>
+
+            <div class="awakening-title">
+                COMBAT SKILLS
+            </div>
+
+            <div class="awakening-subtitle">
+                MASTER YOUR POWER
+            </div>
+
+        </div>
+
+        <div id="combatSkillList"></div>
+
+    `;
+
+    const content =
+        document.getElementById("content");
+
+    if(content)
+        content.appendChild(page);
+
+    renderCombatSkills();
+
+}
+
+
+/* =========================================================
+   RENDER SKILLS
+   ========================================================= */
+
+function renderCombatSkills(){
+
+    const box =
+        document.getElementById("combatSkillList");
+
+    if(!box)
+        return;
+
+    box.innerHTML = "";
+
+    COMBAT_SKILLS.forEach(skill => {
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "combat-skill-card";
+
+        const cooldown =
+            Number(skillCooldowns[skill.id] || 0);
+
+        const ready =
+            cooldown <= 0;
+
+        card.innerHTML = `
+
+            <div class="combat-skill-icon">
+                ${skill.icon}
+            </div>
+
+            <div class="combat-skill-info">
+
+                <div class="combat-skill-name">
+                    ${skill.name}
+                </div>
+
+                <div class="combat-skill-description">
+                    ${skill.description}
+                </div>
+
+                <div class="combat-skill-stats">
+
+                    <span>
+                        ⚔ ×${skill.damage}
+                    </span>
+
+                    <span>
+                        ⚡ ${skill.energy}
+                    </span>
+
+                    <span>
+                        ⏱ ${skill.cooldown}s
+                    </span>
+
+                </div>
+
+            </div>
+
+            <button
+                class="skill-use-button"
+                onclick="useCombatSkill('${skill.id}')"
+                ${ready ? "" : "disabled"}
+            >
+
+                ${
+                    ready
+                    ? "READY"
+                    : cooldown + "s"
+                }
+
+            </button>
+
+        `;
+
+        box.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================================================
+   USE SKILL
+   ========================================================= */
+
+window.useCombatSkill =
+function(skillID){
+
+    const skill =
+        COMBAT_SKILLS.find(
+            s => s.id === skillID
+        );
+
+    if(!skill)
+        return;
+
+
+    const cooldown =
+        Number(
+            skillCooldowns[skillID] || 0
+        );
+
+
+    if(cooldown > 0){
+
+        showSkillMessage(
+            "SKILL IS ON COOLDOWN"
+        );
+
+        return;
+
+    }
+
+
+    const energy =
+        Number(
+            localStorage.getItem("ariseEnergy") || 100
+        );
+
+
+    if(energy < skill.energy){
+
+        showSkillMessage(
+            "NOT ENOUGH ENERGY"
+        );
+
+        return;
+
+    }
+
+
+    /*
+       Only perform combat damage
+       if a boss battle is currently active.
+    */
+
+    if(
+        typeof battleActive !== "undefined" &&
+        battleActive &&
+        typeof currentBoss !== "undefined" &&
+        currentBoss
+    ){
+
+        const power =
+            typeof getBattlePower === "function"
+            ? getBattlePower()
+            : 10;
+
+
+        let damage =
+            Math.floor(
+                power * skill.damage
+            );
+
+
+        /*
+           Awakening gets a chance
+           to become a critical hit.
+        */
+
+        if(skillID === "awakening"){
+
+            if(Math.random() < 0.35){
+
+                damage *= 2;
+
+                showSkillMessage(
+                    "✦ AWAKENING CRITICAL ✦"
+                );
+
+            }
+
+        }
+
+
+        damage =
+            Math.max(
+                15,
+                damage -
+                Number(currentBoss.defense || 0)
+            );
+
+
+        bossHP =
+            Math.max(
+                0,
+                bossHP - damage
+            );
+
+
+        localStorage.setItem(
+            "ariseEnergy",
+            energy - skill.energy
+        );
+
+
+        showSkillMessage(
+            `${skill.name} → -${damage} DAMAGE`
+        );
+
+
+        if(typeof updateBattleUI === "function"){
+
+            updateBattleUI();
+
+        }
+
+
+        if(bossHP <= 0){
+
+            setTimeout(function(){
+
+                if(
+                    typeof bossVictory === "function"
+                ){
+
+                    bossVictory();
+
+                }
+
+            },500);
+
+            return;
+
+        }
+
+
+        /*
+           Boss counter attack.
+        */
+
+        if(
+            typeof bossTurn !== "undefined"
+        ){
+
+            bossTurn = true;
+
+        }
+
+
+        setTimeout(function(){
+
+            if(
+                typeof bossAttack === "function"
+            ){
+
+                bossAttack();
+
+            }
+
+        },900);
+
+
+    }else{
+
+        showSkillMessage(
+            "ENTER A BOSS GATE TO USE COMBAT SKILLS"
+        );
+
+    }
+
+
+    if(skill.cooldown > 0){
+
+        skillCooldowns[skillID] =
+            skill.cooldown;
+
+        saveSkillCooldowns();
+
+        startSkillCooldown(
+            skillID
+        );
+
+    }
+
+
+    renderCombatSkills();
+
+};
+
+
+/* =========================================================
+   COOLDOWN
+   ========================================================= */
+
+function startSkillCooldown(skillID){
+
+    if(skillTimers[skillID])
+        clearInterval(
+            skillTimers[skillID]
+        );
+
+
+    skillTimers[skillID] =
+        setInterval(function(){
+
+            let value =
+                Number(
+                    skillCooldowns[skillID] || 0
+                );
+
+            value--;
+
+            skillCooldowns[skillID] =
+                Math.max(0,value);
+
+            saveSkillCooldowns();
+
+            renderCombatSkills();
+
+
+            if(value <= 0){
+
+                clearInterval(
+                    skillTimers[skillID]
+                );
+
+                delete skillTimers[skillID];
+
+            }
+
+        },1000);
+
+}
+
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+function showSkillMessage(message){
+
+    let messageBox =
+        document.getElementById(
+            "skillBattleMessage"
+        );
+
+
+    if(!messageBox){
+
+        messageBox =
+            document.createElement("div");
+
+        messageBox.id =
+            "skillBattleMessage";
+
+        document.body.appendChild(
+            messageBox
+        );
+
+    }
+
+
+    messageBox.textContent =
+        message;
+
+
+    messageBox.classList.add(
+        "skill-message-show"
+    );
+
+
+    setTimeout(function(){
+
+        messageBox.classList.remove(
+            "skill-message-show"
+        );
+
+    },1800);
+
+}
+
+
+/* =========================================================
+   SKILL NAV
+   ========================================================= */
+
+function createCombatSkillNav(){
+
+    const nav =
+        document.getElementById(
+            "bottom-nav"
+        );
+
+    if(!nav)
+        return;
+
+
+    if(
+        document.getElementById(
+            "awakeningNav"
+        )
+    )
+        return;
+
+
+    const button =
+        document.createElement("button");
+
+    button.id =
+        "awakeningNav";
+
+    button.innerHTML =
+        "✦<span>SKILLS</span>";
+
+
+    button.onclick =
+    function(){
+
+        document
+            .querySelectorAll(".page")
+            .forEach(
+                p =>
+                p.classList.remove(
+                    "active"
+                )
+            );
+
+
+        const page =
+            document.getElementById(
+                "combatSkillPage"
+            );
+
+
+        if(page){
+
+            page.classList.add(
+                "active"
+            );
+
+        }
+
+
+        nav
+            .querySelectorAll("button")
+            .forEach(
+                b =>
+                b.classList.remove(
+                    "active"
+                )
+            );
+
+
+        button.classList.add(
+            "active"
+        );
+
+    };
+
+
+    nav.appendChild(button);
+
+}
+
+
+/* =========================================================
+   CSS
+   ========================================================= */
+
+function addCombatSkillCSS(){
+
+    if(
+        document.getElementById(
+            "combatSkillCSS"
+        )
+    )
+        return;
+
+
+    const style =
+        document.createElement("style");
+
+
+    style.id =
+        "combatSkillCSS";
+
+
+    style.textContent = `
+
+    .awakening-header{
+        text-align:center;
+        padding:20px 10px;
+        margin-bottom:15px;
+        border:1px solid rgba(120,180,255,.25);
+        background:
+            radial-gradient(
+                circle at center,
+                rgba(70,120,255,.15),
+                rgba(5,8,18,.95)
+            );
+    }
+
+    .awakening-symbol{
+        font-size:55px;
+        text-shadow:
+            0 0 20px rgba(100,170,255,.8);
+        animation:
+            awakeningPulse 2s infinite;
+    }
+
+    @keyframes awakeningPulse{
+
+        0%,100%{
+            transform:scale(1);
+            opacity:.8;
+        }
+
+        50%{
+            transform:scale(1.12);
+            opacity:1;
+        }
+
+    }
+
+    .awakening-title{
+        margin-top:5px;
+        font-size:22px;
+        font-weight:bold;
+        letter-spacing:4px;
+    }
+
+    .awakening-subtitle{
+        margin-top:6px;
+        font-size:9px;
+        letter-spacing:3px;
+        opacity:.5;
+    }
+
+    .combat-skill-card{
+        display:grid;
+        grid-template-columns:55px 1fr 70px;
+        align-items:center;
+        gap:12px;
+        margin:12px 0;
+        padding:13px;
+        border:1px solid rgba(100,170,255,.22);
+        background:
+            linear-gradient(
+                145deg,
+                rgba(15,25,45,.95),
+                rgba(5,8,18,.98)
+            );
+    }
+
+    .combat-skill-icon{
+        width:45px;
+        height:45px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border:1px solid rgba(100,180,255,.35);
+        background:rgba(40,90,160,.15);
+        font-size:23px;
+    }
+
+    .combat-skill-name{
+        font-size:12px;
+        font-weight:bold;
+        letter-spacing:1.5px;
+    }
+
+    .combat-skill-description{
+        margin-top:4px;
+        font-size:9px;
+        opacity:.5;
+    }
+
+    .combat-skill-stats{
+        display:flex;
+        gap:8px;
+        margin-top:7px;
+        font-size:8px;
+        opacity:.7;
+    }
+
+    .skill-use-button{
+        min-height:38px;
+        border:1px solid rgba(100,180,255,.45);
+        background:rgba(30,100,180,.2);
+        color:#fff;
+        font-size:9px;
+        font-weight:bold;
+        letter-spacing:1px;
+    }
+
+    .skill-use-button:disabled{
+        opacity:.35;
+    }
+
+    #skillBattleMessage{
+        position:fixed;
+        left:50%;
+        bottom:95px;
+        transform:
+            translate(-50%,20px)
+            scale(.95);
+        z-index:99999;
+        padding:12px 18px;
+        border:1px solid rgba(100,180,255,.5);
+        background:rgba(5,10,20,.96);
+        color:#fff;
+        font-size:10px;
+        letter-spacing:1px;
+        opacity:0;
+        pointer-events:none;
+        transition:
+            .25s ease;
+        white-space:nowrap;
+    }
+
+    #skillBattleMessage.skill-message-show{
+        opacity:1;
+        transform:
+            translate(-50%,0)
+            scale(1);
+    }
+
+    `;
+
+
+    document.head.appendChild(
+        style
+    );
+
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+function initCombatSkills(){
+
+    addCombatSkillCSS();
+
+    createCombatSkillPage();
+
+    createCombatSkillNav();
+
+}
+
+
+if(
+    document.readyState ===
+    "loading"
+){
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initCombatSkills
+    );
+
+}else{
+
+    initCombatSkills();
+
+}
+
+})();
+</script>
+  <script>
+(function(){
+
+/* =====================================================
+   ARISE — DYNAMIC DAILY QUEST SYSTEM
+   ===================================================== */
+
+const DYNAMIC_QUESTS = [
+
+    {
+        name:"IRON PUSH",
+        type:"PUSH-UPS",
+        target:20,
+        unit:"REPS",
+        xp:50,
+        coins:200,
+        stat:"Strength"
+    },
+
+    {
+        name:"SQUAT BREAKER",
+        type:"SQUATS",
+        target:30,
+        unit:"REPS",
+        xp:60,
+        coins:250,
+        stat:"Strength"
+    },
+
+    {
+        name:"CORE AWAKENING",
+        type:"SIT-UPS",
+        target:25,
+        unit:"REPS",
+        xp:55,
+        coins:220,
+        stat:"Discipline"
+    },
+
+    {
+        name:"LEG DESTROYER",
+        type:"LUNGES",
+        target:20,
+        unit:"REPS",
+        xp:70,
+        coins:300,
+        stat:"Strength"
+    },
+
+    {
+        name:"ENDURANCE RUN",
+        type:"RUN",
+        target:10,
+        unit:"MIN",
+        xp:80,
+        coins:350,
+        stat:"Stamina"
+    },
+
+    {
+        name:"PLANK OF STEEL",
+        type:"PLANK",
+        target:2,
+        unit:"MIN",
+        xp:75,
+        coins:300,
+        stat:"Discipline"
+    },
+
+    {
+        name:"WARRIOR CIRCUIT",
+        type:"CIRCUIT",
+        target:3,
+        unit:"ROUNDS",
+        xp:100,
+        coins:500,
+        stat:"Strength"
+    }
+
+];
+
+
+/* =====================================================
+   STATE
+   ===================================================== */
+
+let dynamicQuest =
+    JSON.parse(
+        localStorage.getItem(
+            "ariseDynamicQuest"
+        ) || "null"
+    );
+
+let dynamicQuestDate =
+    localStorage.getItem(
+        "ariseDynamicQuestDate"
+    ) || "";
+
+let dynamicQuestProgress =
+    Number(
+        localStorage.getItem(
+            "ariseDynamicQuestProgress"
+        ) || 0
+    );
+
+let dynamicQuestCompleted =
+    localStorage.getItem(
+        "ariseDynamicQuestCompleted"
+    ) === "true";
+
+
+/* =====================================================
+   DATE
+   ===================================================== */
+
+function getToday(){
+
+    const d = new Date();
+
+    return (
+        d.getFullYear() +
+        "-" +
+        String(
+            d.getMonth()+1
+        ).padStart(2,"0") +
+        "-" +
+        String(
+            d.getDate()
+        ).padStart(2,"0")
+    );
+
+}
+
+
+/* =====================================================
+   GENERATE QUEST
+   ===================================================== */
+
+function generateDynamicQuest(){
+
+    const today =
+        getToday();
+
+
+    if(
+        dynamicQuestDate === today &&
+        dynamicQuest
+    ){
+
+        return;
+
+    }
+
+
+    const random =
+        Math.floor(
+            Math.random() *
+            DYNAMIC_QUESTS.length
+        );
+
+
+    dynamicQuest =
+        DYNAMIC_QUESTS[random];
+
+
+    dynamicQuestDate =
+        today;
+
+    dynamicQuestProgress =
+        0;
+
+    dynamicQuestCompleted =
+        false;
+
+
+    localStorage.setItem(
+        "ariseDynamicQuest",
+        JSON.stringify(
+            dynamicQuest
+        )
+    );
+
+    localStorage.setItem(
+        "ariseDynamicQuestDate",
+        dynamicQuestDate
+    );
+
+    localStorage.setItem(
+        "ariseDynamicQuestProgress",
+        "0"
+    );
+
+    localStorage.setItem(
+        "ariseDynamicQuestCompleted",
+        "false"
+    );
+
+}
+
+
+/* =====================================================
+   DIFFICULTY
+   ===================================================== */
+
+function getQuestDifficulty(){
+
+    const level =
+        Number(
+            localStorage.getItem(
+                "ariseLevel"
+            ) || 1
+        );
+
+
+    if(level >= 20)
+        return "S";
+
+    if(level >= 12)
+        return "A";
+
+    if(level >= 7)
+        return "B";
+
+    if(level >= 3)
+        return "C";
+
+    if(level >= 2)
+        return "D";
+
+    return "E";
+
+}
+
+
+/* =====================================================
+   REWARD MULTIPLIER
+   ===================================================== */
+
+function getDifficultyMultiplier(){
+
+    const rank =
+        getQuestDifficulty();
+
+
+    const multipliers = {
+
+        E:1,
+        D:1.15,
+        C:1.3,
+        B:1.5,
+        A:1.8,
+        S:2.2
+
+    };
+
+
+    return multipliers[rank] || 1;
+
+}
+
+
+/* =====================================================
+   CREATE PAGE
+   ===================================================== */
+
+function createDynamicQuestPage(){
+
+    if(
+        document.getElementById(
+            "dynamicQuestPage"
+        )
+    )
+        return;
+
+
+    const page =
+        document.createElement(
+            "section"
+        );
+
+
+    page.id =
+        "dynamicQuestPage";
+
+    page.className =
+        "page";
+
+
+    page.innerHTML = `
+
+        <div class="hud-title">
+            DAILY MISSION
+        </div>
+
+        <div id="dynamicQuestBox"></div>
+
+    `;
+
+
+    const content =
+        document.getElementById(
+            "content"
+        );
+
+
+    if(content)
+        content.appendChild(
+            page
+        );
+
+
+    renderDynamicQuest();
+
+}
+
+
+/* =====================================================
+   RENDER
+   ===================================================== */
+
+function renderDynamicQuest(){
+
+    generateDynamicQuest();
+
+
+    const box =
+        document.getElementById(
+            "dynamicQuestBox"
+        );
+
+
+    if(!box)
+        return;
+
+
+    const difficulty =
+        getQuestDifficulty();
+
+
+    const multiplier =
+        getDifficultyMultiplier();
+
+
+    const xp =
+        Math.floor(
+            dynamicQuest.xp *
+            multiplier
+        );
+
+
+    const coins =
+        Math.floor(
+            dynamicQuest.coins *
+            multiplier
+        );
+
+
+    const percent =
+        Math.min(
+            100,
+            (
+                dynamicQuestProgress /
+                dynamicQuest.target
+            ) * 100
+        );
+
+
+    box.innerHTML = `
+
+        <div class="dynamic-quest-card">
+
+            <div class="quest-system-label">
+                SYSTEM QUEST
+            </div>
+
+            <div class="dynamic-difficulty">
+                ${difficulty}-RANK
+            </div>
+
+            <div class="dynamic-quest-name">
+                ${dynamicQuest.name}
+            </div>
+
+            <div class="dynamic-quest-type">
+                ${dynamicQuest.type}
+            </div>
+
+
+            <div class="dynamic-progress-text">
+
+                ${dynamicQuestProgress}
+                /
+                ${dynamicQuest.target}
+                ${dynamicQuest.unit}
+
+            </div>
+
+
+            <div class="dynamic-progress">
+
+                <div
+                    class="dynamic-progress-fill"
+                    style="
+                    width:${percent}%;
+                    "
+                ></div>
+
+            </div>
+
+
+            <div class="dynamic-rewards">
+
+                <span>
+                    ✦ +${xp} XP
+                </span>
+
+                <span>
+                    🪙 +${coins}
+                </span>
+
+                <span>
+                    +${dynamicQuest.stat}
+                </span>
+
+            </div>
+
+
+            ${
+                dynamicQuestCompleted
+                ?
+                `
+                <div class="quest-complete">
+                    ✓ QUEST COMPLETE
+                </div>
+                `
+                :
+                `
+                <button
+                    class="dynamic-quest-button"
+                    onclick="startDynamicQuest()"
+                >
+                    START QUEST
+                </button>
+                `
+            }
+
+        </div>
+
+    `;
+
+}
+
+
+/* =====================================================
+   START QUEST
+   ===================================================== */
+
+window.startDynamicQuest =
+function(){
+
+    if(dynamicQuestCompleted)
+        return;
+
+
+    if(
+        typeof runnerType !==
+        "undefined"
+    ){
+
+        runnerType =
+            "dynamic";
+
+        runnerName =
+            dynamicQuest.name;
+
+        runnerInfo =
+            `${dynamicQuest.type} • ${dynamicQuest.target} ${dynamicQuest.unit}`;
+
+        setNumber = 1;
+
+
+        if(
+            typeof showRunner ===
+            "function"
+        ){
+
+            showRunner();
+
+        }
+
+    }else{
+
+        dynamicQuestProgress =
+            dynamicQuest.target;
+
+        completeDynamicQuest();
+
+    }
+
+};
+
+
+/* =====================================================
+   COMPLETE
+   ===================================================== */
+
+window.completeDynamicQuest =
+function(){
+
+    if(dynamicQuestCompleted)
+        return;
+
+
+    dynamicQuestProgress =
+        dynamicQuest.target;
+
+
+    dynamicQuestCompleted =
+        true;
+
+
+    const multiplier =
+        getDifficultyMultiplier();
+
+
+    const xpReward =
+        Math.floor(
+            dynamicQuest.xp *
+            multiplier
+        );
+
+
+    const coinReward =
+        Math.floor(
+            dynamicQuest.coins *
+            multiplier
+        );
+
+
+    /* XP */
+
+    let xp =
+        Number(
+            localStorage.getItem(
+                "ariseXP"
+            ) || 0
+        );
+
+
+    xp += xpReward;
+
+
+    localStorage.setItem(
+        "ariseXP",
+        xp
+    );
+
+
+    /* COINS */
+
+    let coins =
+        Number(
+            localStorage.getItem(
+                "ariseCoins"
+            ) || 0
+        );
+
+
+    coins += coinReward;
+
+
+    localStorage.setItem(
+        "ariseCoins",
+        coins
+    );
+
+
+    /* STAT */
+
+    const statKey =
+        "arise" +
+        dynamicQuest.stat;
+
+
+    let stat =
+        Number(
+            localStorage.getItem(
+                statKey
+            ) || 0
+        );
+
+
+    localStorage.setItem(
+        statKey,
+        stat + 3
+    );
+
+
+    localStorage.setItem(
+        "ariseDynamicQuestProgress",
+        dynamicQuestProgress
+    );
+
+
+    localStorage.setItem(
+        "ariseDynamicQuestCompleted",
+        "true"
+    );
+
+
+    /* COMPLETED QUEST COUNT */
+
+    let completed =
+        Number(
+            localStorage.getItem(
+                "ariseCompletedQuests"
+            ) || 0
+        );
+
+
+    completed++;
+
+
+    localStorage.setItem(
+        "ariseCompletedQuests",
+        completed
+    );
+
+
+    renderDynamicQuest();
+
+
+    if(
+        typeof updateUI ===
+        "function"
+    ){
+
+        updateUI();
+
+    }
+
+
+    showDynamicReward(
+        xpReward,
+        coinReward
+    );
+
+};
+
+
+/* =====================================================
+   REWARD POPUP
+   ===================================================== */
+
+function showDynamicReward(
+    xp,
+    coins
+){
+
+    const popup =
+        document.createElement(
+            "div"
+        );
+
+
+    popup.className =
+        "dynamic-reward-popup";
+
+
+    popup.innerHTML = `
+
+        <div class="reward-title">
+            QUEST COMPLETE
+        </div>
+
+        <div>
+            ✦ +${xp} XP
+        </div>
+
+        <div>
+            🪙 +${coins} COINS
+        </div>
+
+        <div>
+            +3 ${dynamicQuest.stat}
+        </div>
+
+    `;
+
+
+    document.body.appendChild(
+        popup
+    );
+
+
+    setTimeout(
+        function(){
+
+            popup.remove();
+
+        },
+        2500
+    );
+
+}
+
+
+/* =====================================================
+   NAV BUTTON
+   ===================================================== */
+
+function createDynamicQuestNav(){
+
+    const nav =
+        document.getElementById(
+            "bottom-nav"
+        );
+
+
+    if(!nav)
+        return;
+
+
+    if(
+        document.getElementById(
+            "dailyMissionNav"
+        )
+    )
+        return;
+
+
+    const button =
+        document.createElement(
+            "button"
+        );
+
+
+    button.id =
+        "dailyMissionNav";
+
+
+    button.innerHTML =
+        "◆<span>MISSION</span>";
+
+
+    button.onclick =
+    function(){
+
+        document
+            .querySelectorAll(
+                ".page"
+            )
+            .forEach(
+                p =>
+                p.classList.remove(
+                    "active"
+                )
+            );
+
+
+        const page =
+            document.getElementById(
+                "dynamicQuestPage"
+            );
+
+
+        if(page)
+            page.classList.add(
+                "active"
+            );
+
+
+        nav
+            .querySelectorAll(
+                "button"
+            )
+            .forEach(
+                b =>
+                b.classList.remove(
+                    "active"
+                )
+            );
+
+
+        button.classList.add(
+            "active"
+        );
+
+
+        renderDynamicQuest();
+
+    };
+
+
+    nav.appendChild(
+        button
+    );
+
+}
+
+
+/* =====================================================
+   CSS
+   ===================================================== */
+
+function addDynamicQuestCSS(){
+
+    if(
+        document.getElementById(
+            "dynamicQuestCSS"
+        )
+    )
+        return;
+
+
+    const style =
+        document.createElement(
+            "style"
+        );
+
+
+    style.id =
+        "dynamicQuestCSS";
+
+
+    style.textContent = `
+
+    .dynamic-quest-card{
+
+        border:1px solid
+        rgba(100,180,255,.3);
+
+        background:
+        linear-gradient(
+            145deg,
+            rgba(15,25,45,.98),
+            rgba(5,8,18,.98)
+        );
+
+        padding:20px;
+
+        text-align:center;
+
+        box-shadow:
+        0 0 30px
+        rgba(50,120,255,.08);
+
+    }
+
+
+    .quest-system-label{
+
+        font-size:9px;
+
+        letter-spacing:4px;
+
+        opacity:.45;
+
+        margin-bottom:12px;
+
+    }
+
+
+    .dynamic-difficulty{
+
+        display:inline-block;
+
+        padding:5px 12px;
+
+        border:1px solid
+        rgba(100,180,255,.4);
+
+        font-size:10px;
+
+        letter-spacing:2px;
+
+        margin-bottom:15px;
+
+    }
+
+
+    .dynamic-quest-name{
+
+        font-size:25px;
+
+        font-weight:bold;
+
+        letter-spacing:3px;
+
+    }
+
+
+    .dynamic-quest-type{
+
+        margin-top:7px;
+
+        font-size:10px;
+
+        opacity:.5;
+
+        letter-spacing:2px;
+
+    }
+
+
+    .dynamic-progress-text{
+
+        margin-top:25px;
+
+        font-size:16px;
+
+        letter-spacing:2px;
+
+    }
+
+
+    .dynamic-progress{
+
+        height:9px;
+
+        margin-top:10px;
+
+        background:
+        rgba(255,255,255,.08);
+
+        overflow:hidden;
+
+    }
+
+
+    .dynamic-progress-fill{
+
+        height:100%;
+
+        background:#4da3ff;
+
+        box-shadow:
+        0 0 15px
+        rgba(80,160,255,.8);
+
+        transition:
+        width .5s ease;
+
+    }
+
+
+    .dynamic-rewards{
+
+        display:grid;
+
+        grid-template-columns:
+        repeat(3,1fr);
+
+        gap:5px;
+
+        margin-top:20px;
+
+        font-size:9px;
+
+        opacity:.75;
+
+    }
+
+
+    .dynamic-quest-button{
+
+        width:100%;
+
+        margin-top:22px;
+
+        padding:15px;
+
+        background:
+        rgba(40,110,200,.2);
+
+        border:1px solid
+        rgba(100,180,255,.5);
+
+        color:#fff;
+
+        font-weight:bold;
+
+        letter-spacing:3px;
+
+    }
+
+
+    .quest-complete{
+
+        margin-top:22px;
+
+        padding:14px;
+
+        border:1px solid
+        rgba(100,255,180,.35);
+
+        color:#9dffc5;
+
+        letter-spacing:2px;
+
+        font-size:11px;
+
+    }
+
+
+    .dynamic-reward-popup{
+
+        position:fixed;
+
+        left:50%;
+
+        top:50%;
+
+        transform:
+        translate(-50%,-50%);
+
+        z-index:999999;
+
+        width:75%;
+
+        max-width:320px;
+
+        padding:25px;
+
+        text-align:center;
+
+        line-height:2;
+
+        border:1px solid
+        rgba(100,180,255,.5);
+
+        background:
+        rgba(5,10,20,.97);
+
+        box-shadow:
+        0 0 50px
+        rgba(50,120,255,.2);
+
+        animation:
+        questRewardIn .3s ease;
+
+    }
+
+
+    .reward-title{
+
+        font-size:18px;
+
+        font-weight:bold;
+
+        letter-spacing:3px;
+
+        margin-bottom:12px;
+
+    }
+
+
+    @keyframes questRewardIn{
+
+        from{
+
+            opacity:0;
+
+            transform:
+            translate(-50%,-50%)
+            scale(.7);
+
+        }
+
+        to{
+
+            opacity:1;
+
+            transform:
+            translate(-50%,-50%)
+            scale(1);
+
+        }
+
+    }
+
+    `;
+
+
+    document.head.appendChild(
+        style
+    );
+
+}
+
+
+/* =====================================================
+   INITIALIZE
+   ===================================================== */
+
+function initDynamicQuest(){
+
+    generateDynamicQuest();
+
+    addDynamicQuestCSS();
+
+    createDynamicQuestPage();
+
+    createDynamicQuestNav();
+
+}
+
+
+if(
+    document.readyState ===
+    "loading"
+){
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initDynamicQuest
+    );
+
+}else{
+
+    initDynamicQuest();
+
+}
+
+})();
+</script>
+</body>
+</html>
